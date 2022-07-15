@@ -16,3 +16,8 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.dropdown-menu > li > a:hover {
+    background-image: none;
+    background-color: #d0d0d08d;
+}
