@@ -7,6 +7,7 @@ namespace ComicsWebApp.Data
     {
         public DbSet<Comics> Comics { get; set; }
         public DbSet<ComicsGenre> ComicsGenres { get; set; }
+        public DbSet<ComicsPages> ComicsPages { get; set; }
 
         public ComicsDbContext(DbContextOptions<ComicsDbContext> options)
             : base(options)
@@ -20,6 +21,10 @@ namespace ComicsWebApp.Data
 
             modelBuilder.Entity<Comics>()
                 .Property(c => c.AvailabilityStatus)
+                .HasConversion<string>();
+
+            modelBuilder.Entity<Comics>()
+                .Property(c => c.CoverType)
                 .HasConversion<string>();
 
             modelBuilder.Entity<ComicsGenre>().HasData(
