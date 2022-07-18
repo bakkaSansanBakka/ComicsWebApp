@@ -1,4 +1,6 @@
-﻿namespace ComicsWebApp.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ComicsWebApp.Models
 {
 
     public enum ComicsLanguage
@@ -15,8 +17,11 @@
 
     public enum ComicsAvailabilityStatus
     {
+        [Display(Name = "In Stock")]
         InStock,
+        [Display(Name = "Sold Out")]
         SoldOut,
+        [Display(Name = "On Order")]
         OnOrder
     }
 
@@ -33,6 +38,7 @@
         public string Author { get; set; }
         public float Price { get; set; }
         public byte[] Cover { get; set; }
+        public CoverType CoverType { get; set; }
         public ComicsLanguage Language { get; set; }
         public string Publisher { get; set; }
         public ComicsAvailabilityStatus AvailabilityStatus { get; set; }
