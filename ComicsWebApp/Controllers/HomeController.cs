@@ -38,6 +38,7 @@ namespace ComicsWebApp.Controllers
         public IActionResult AddComics(ComicsViewModel comicsViewModel, IFormFile CoverFile)
         {
             ComicsGenre comicsGenre = new ComicsGenre();
+            comicsViewModel.ListOfGenres = new List<ComicsGenre>();
 
             Comics comics = new Comics();
             comics.Name = comicsViewModel.Comics.Name;
@@ -58,6 +59,7 @@ namespace ComicsWebApp.Controllers
                 {
                     comicsGenre = _context.ComicsGenres.FirstOrDefault(g => g.Id == genreid);
                     comics.Genres.Add(comicsGenre);
+                    comicsViewModel.ListOfGenres.Add(comicsGenre);
                 }
             }
 
@@ -73,7 +75,21 @@ namespace ComicsWebApp.Controllers
             _context.Comics.Add(comics);
             _context.SaveChanges();
 
-            return RedirectToAction("Index");
+            comicsViewModel.ComicsId = _context.Comics.FirstOrDefault(c => c.Name == comics.Name).Id;
+
+            return View("ComicsInfo", comicsViewModel);
+        }
+
+        public ActionResult RenderPhoto(int id)
+        {
+            byte[] cover;
+            var comics = _context.Comics.Find(id);
+            if (!comics.Equals(null))
+            {
+                cover = comics.Cover;
+                return File(cover, "image/jpg");
+            }
+            return View("Index");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

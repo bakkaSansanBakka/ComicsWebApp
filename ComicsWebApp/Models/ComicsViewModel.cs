@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.ComponentModel.DataAnnotations;
 
 namespace ComicsWebApp.Models
 {
@@ -7,6 +6,8 @@ namespace ComicsWebApp.Models
     {
         public Comics Comics { get; set; }
         public List<SelectListItem> Genres { get; set; }
+        public List<ComicsGenre> ListOfGenres { get; set; }
+        public int ComicsId { get; set; }
         public int[] GenresIds { get; set; }
     }
 }
