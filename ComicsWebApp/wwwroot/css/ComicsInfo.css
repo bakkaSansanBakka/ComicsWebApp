@@ -1,0 +1,29 @@
+﻿.flex-container {
+    display: flex;
+}
+
+.flex-info-box {
+    width: 100%
+}
+
+.flex-container-column-direction {
+    flex-direction: column;
+}
+
+.flex-container-space-between {
+    justify-content: space-between;
+}
+
+.span-bold {
+    font-weight: bold;
+}
+
+.main-image {
+    margin-right: 20px;
+}
+
+.button-edit {
+    width: 100px;
+    height: 50px;
+    align-self: center;
+}

@@ -1,0 +1,65 @@
+﻿@model ComicsWebApp.Models.ComicsViewModel
+@using ComicsWebApp.Utilities
+
+@{
+    ViewData["Title"] = "ComicsInfo";
+    var color = "black";
+    if (Model.Comics.AvailabilityStatus.Equals(ComicsAvailabilityStatus.InStock))
+    {
+        color = "green";
+    }
+    else if (Model.Comics.AvailabilityStatus.Equals(ComicsAvailabilityStatus.SoldOut))
+    {
+        color = "red";
+    }
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/ComicsInfo.css" asp-append-version="true" />
+</head>
+
+<h1>Comics Details</h1>
+
+<hr />
+
+<div class="flex-container">
+    <img src="@Url.Action("RenderPhoto", "Home", new {id = Model.ComicsId })" class="main-image" height="440" width="290"/>
+    <div class="flex-container flex-info-box flex-container-column-direction">
+        <div class="flex-container flex-container-space-between">
+            <div class="flex-container flex-container-column-direction">
+                <div style="color: @color;">@Model.Comics.AvailabilityStatus.GetDisplayName()</div>
+                <h3>@Model.Comics.Name</h3>
+            </div>
+            <button type="button" class="btn btn-success button-edit">Edit</button>
+        </div>
+        <div>
+            <h3>$@Model.Comics.Price</h3>
+            <div>Written by @Model.Comics.Author</div>
+            <div><span class="span-bold">Publisher:</span> @Model.Comics.Publisher</div>
+            <div>
+                <span class="span-bold">Genres:</span>
+                @foreach (var genre in Model.ListOfGenres)
+                {
+                    <a href="">@genre.GenreName</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<h3>Description</h3>
+<div>@Model.Comics.Description</div><br />
+
+<div><span class="span-bold">Number of pages:</span> @Model.Comics.PagesNumber</div>
+<div><span class="span-bold">Publication Format:</span> @Model.Comics.PublicationFormat</div>
+<div><span class="span-bold">Cover Type:</span> @Model.Comics.CoverType</div>
+<div><span class="span-bold">Year of publication:</span> @Model.Comics.YearOfPublisihing</div>
+<div><span class="span-bold">Language:</span> @Model.Comics.Language</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
