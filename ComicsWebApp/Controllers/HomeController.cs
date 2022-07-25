@@ -94,6 +94,18 @@ namespace ComicsWebApp.Controllers
             return View("Index");
         }
 
+        public ActionResult RenderPage(int id)
+        {
+            byte[] page;
+            var comicsPage = _context.ComicsPages.Find(id);
+            if (!comicsPage.Equals(null))
+            {
+                page = comicsPage.Content;
+                return File(page, "image/jpg");
+            }
+            return View("Index");
+        }
+
         [HttpPost]
         public async Task<IActionResult> AddPages(List<IFormFile> pagesFiles, int id)
         {
