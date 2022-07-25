@@ -2,6 +2,7 @@
 using ComicsWebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace ComicsWebApp.Controllers
@@ -39,6 +40,7 @@ namespace ComicsWebApp.Controllers
         {
             ComicsGenre comicsGenre = new ComicsGenre();
             comicsViewModel.ListOfGenres = new List<ComicsGenre>();
+            comicsViewModel.ListOfPages = new List<ComicsPages>();
 
             Comics comics = new Comics();
             comics.Name = comicsViewModel.Comics.Name;
@@ -75,7 +77,7 @@ namespace ComicsWebApp.Controllers
             _context.Comics.Add(comics);
             _context.SaveChanges();
 
-            comicsViewModel.ComicsId = _context.Comics.FirstOrDefault(c => c.Name == comics.Name).Id;
+            comicsViewModel.Comics.Id = _context.Comics.FirstOrDefault(c => c.Name == comics.Name).Id;
 
             return View("ComicsInfo", comicsViewModel);
         }
@@ -90,6 +92,49 @@ namespace ComicsWebApp.Controllers
                 return File(cover, "image/jpg");
             }
             return View("Index");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddPages(List<IFormFile> pagesFiles, int id)
+        {
+            var comics = _context.Comics.Include(c => c.Genres).FirstOrDefault(c => c.Id == id);
+
+            foreach (var pageFile in pagesFiles)
+            {
+                var name = Path.GetFileNameWithoutExtension(pageFile.FileName);
+                var type = Path.GetExtension(pageFile.FileName);
+
+                var page = new ComicsPages
+                {
+                    Name = name,
+                    FileType = type,
+                };
+                using (var dataStream = new MemoryStream())
+                {
+                    await pageFile.CopyToAsync(dataStream);
+                    page.Content = dataStream.ToArray();
+                }
+
+                comics.Pages.Add(page);
+
+                _context.ComicsPages.Add(page);
+                _context.SaveChanges();
+            }
+
+            var comicsViewModel = CreateComicsViewModelFromDatabase(comics);
+
+            return View("ComicsInfo", comicsViewModel);
+        }
+
+        public ComicsViewModel CreateComicsViewModelFromDatabase(Comics comics)
+        {
+            var comicsViewModel = new ComicsViewModel();
+
+            comicsViewModel.Comics = comics;
+            comicsViewModel.ListOfGenres = comics.Genres;
+            comicsViewModel.ListOfPages = comics.Pages;
+
+            return comicsViewModel;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

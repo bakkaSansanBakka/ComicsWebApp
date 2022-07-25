@@ -22,27 +22,58 @@
 
 <hr />
 
+<div class="modal fade" id="addPagesModal" tabindex="-1" role="dialog" 
+    aria-labelledby="addPagesModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form enctype="multipart/form-data" method="post" asp-controller="Home" asp-route-id="@Model.Comics.Id" asp-action="AddPages">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="AddPagesModalLabel">Add Comics Pages</h5>
+                    <button id="closeAddPagesModalButton" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                    <label asp-for="ListOfPages" class="control-label">Add Pages</label>
+                    <input asp-for="ListOfPages" class="form-control" type="file" name="pagesFiles" multiple />
+                </div>
+                <div class="modal-footer">
+                    <input id="cancelAddPagesModalButton" type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" />
+                    <input id="submitAddPagesModalButton" type="Submit" class="btn btn-success" value="Add" />
+                </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <div class="flex-container">
-    <img src="@Url.Action("RenderPhoto", "Home", new {id = Model.ComicsId })" class="main-image" height="440" width="290"/>
-    <div class="flex-container flex-info-box flex-container-column-direction">
-        <div class="flex-container flex-container-space-between">
-            <div class="flex-container flex-container-column-direction">
+    <img src="@Url.Action("RenderPhoto", "Home", new {id = Model.Comics.Id })" class="main-image" height="440" width="290"/>
+    <div class="flex-info-box">
+        <div class="flex-container-space-between">
+            <div class="flex-container-column-direction">
                 <div style="color: @color;">@Model.Comics.AvailabilityStatus.GetDisplayName()</div>
                 <h3>@Model.Comics.Name</h3>
             </div>
             <button type="button" class="btn btn-success button-edit">Edit</button>
         </div>
-        <div>
-            <h3>$@Model.Comics.Price</h3>
-            <div>Written by @Model.Comics.Author</div>
-            <div><span class="span-bold">Publisher:</span> @Model.Comics.Publisher</div>
+        <div class="flex-container-space-between">
             <div>
-                <span class="span-bold">Genres:</span>
-                @foreach (var genre in Model.ListOfGenres)
-                {
-                    <a href="">@genre.GenreName</a>
-                }
+                <h3>$@Model.Comics.Price</h3>
+                <div>Written by @Model.Comics.Author</div>
+                <div><span class="span-bold">Publisher:</span> @Model.Comics.Publisher</div>
+                <div>
+                    <span class="span-bold">Genres:</span>
+                    @foreach (var genre in Model.ListOfGenres)
+                    {
+                        <a href="">@genre.GenreName</a>
+                    }
+                </div>
             </div>
+            <button id="showAddPagesModalButton" type="button" class="btn btn-primary button-pages" data-toggle="modal" data-target="#addPagesModal">
+                Add Pages
+            </button>
         </div>
     </div>
 </div>
@@ -55,6 +86,14 @@
 <div><span class="span-bold">Cover Type:</span> @Model.Comics.CoverType</div>
 <div><span class="span-bold">Year of publication:</span> @Model.Comics.YearOfPublisihing</div>
 <div><span class="span-bold">Language:</span> @Model.Comics.Language</div>
+<br /><br />
+
+<div>
+    @foreach (var comicsPage in Model.ListOfPages)
+    {
+        @comicsPage.Name;
+    }
+</div>
 
 <div>
     <a asp-action="Index">Back to List</a>
@@ -62,4 +101,22 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script>
+        const container = document.getElementById("addPagesModal");
+        const modal = new bootstrap.Modal(container);
+
+        document.getElementById("showAddPagesModalButton").addEventListener("click", function () {
+            modal.show();
+        });
+        document.getElementById("closeAddPagesModalButton").addEventListener("click", function () {
+            modal.hide();
+        });
+        document.getElementById("cancelAddPagesModalButton").addEventListener("click", function () {
+            modal.hide();
+        });
+        document.getElementById("submitAddPagesModalButton").addEventListener("click", function () {
+            modal.hide();
+        });
+    </script>
 }
