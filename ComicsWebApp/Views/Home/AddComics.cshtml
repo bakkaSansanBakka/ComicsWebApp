@@ -33,7 +33,7 @@
             <div class="form-group">
                 <label asp-for="GenresIds" class="control-label">Genre</label>
                 @Html.ListBoxFor(model => model.GenresIds,
-                    new MultiSelectList(Model.Genres, "Value", "Text"),
+                    new MultiSelectList(Model.AllGenresList, "Value", "Text"),
                     new { @class = "form-control", multiple = "multiple", id = "Genres_dropdown" })
             </div>
 
