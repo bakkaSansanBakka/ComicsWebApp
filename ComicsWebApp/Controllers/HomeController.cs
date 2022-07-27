@@ -9,6 +9,7 @@ namespace ComicsWebApp.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly string imageFileType = "image/jpg";
         private readonly ILogger<HomeController> _logger;
         private readonly ComicsDbContext _context;
 
@@ -36,40 +37,41 @@ namespace ComicsWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddComics(ComicsViewModel comicsViewModel, IFormFile CoverFile)
+        public IActionResult AddComics(ComicsViewModel comicsViewModel, IFormFile coverFile)
         {
-            ComicsGenre comicsGenre = new ComicsGenre();
             comicsViewModel.ListOfGenres = new List<ComicsGenre>();
             comicsViewModel.ListOfPages = new List<ComicsPages>();
 
-            Comics comics = new Comics();
-            comics.Name = comicsViewModel.Comics.Name;
-            comics.Author = comicsViewModel.Comics.Author;
-            comics.Price = comicsViewModel.Comics.Price;
-            comics.CoverType = comicsViewModel.Comics.CoverType;
-            comics.Language = comicsViewModel.Comics.Language;
-            comics.Publisher = comicsViewModel.Comics.Publisher;
-            comics.AvailabilityStatus = comicsViewModel.Comics.AvailabilityStatus;
-            comics.PagesNumber = comicsViewModel.Comics.PagesNumber;
-            comics.PublicationFormat = comicsViewModel.Comics.PublicationFormat;
-            comics.YearOfPublisihing = comicsViewModel.Comics.YearOfPublisihing;
-            comics.Description = comicsViewModel.Comics.Description;
+            Comics comics = new Comics
+            {
+                Name = comicsViewModel.Comics.Name,
+                Author = comicsViewModel.Comics.Author,
+                Price = comicsViewModel.Comics.Price,
+                CoverType = comicsViewModel.Comics.CoverType,
+                Language = comicsViewModel.Comics.Language,
+                Publisher = comicsViewModel.Comics.Publisher,
+                AvailabilityStatus = comicsViewModel.Comics.AvailabilityStatus,
+                PagesNumber = comicsViewModel.Comics.PagesNumber,
+                PublicationFormat = comicsViewModel.Comics.PublicationFormat,
+                YearOfPublisihing = comicsViewModel.Comics.YearOfPublisihing,
+                Description = comicsViewModel.Comics.Description,
+            };
 
             if (comicsViewModel.GenresIds.Length > 0)
             {
                 foreach (var genreid in comicsViewModel.GenresIds)
                 {
-                    comicsGenre = _context.ComicsGenres.FirstOrDefault(g => g.Id == genreid);
+                    var comicsGenre = _context.ComicsGenres.FirstOrDefault(g => g.Id == genreid);
                     comics.Genres.Add(comicsGenre);
                     comicsViewModel.ListOfGenres.Add(comicsGenre);
                 }
             }
 
-            if (CoverFile.Length > 0)
+            if (coverFile.Length > 0)
             {
                 using (var target = new MemoryStream())
                 {
-                    CoverFile.CopyTo(target);
+                    coverFile.CopyTo(target);
                     comics.Cover = target.ToArray();
                 }
             }
@@ -79,7 +81,9 @@ namespace ComicsWebApp.Controllers
 
             comicsViewModel.Comics.Id = _context.Comics.FirstOrDefault(c => c.Name == comics.Name).Id;
 
-            return View("ComicsInfo", comicsViewModel);
+            var comicsResponseViewModel = CreateNewComicsViewModelFromExisting(comicsViewModel);
+
+            return View("ComicsInfo", comicsResponseViewModel);
         }
 
         public ActionResult RenderPhoto(int id)
@@ -89,7 +93,7 @@ namespace ComicsWebApp.Controllers
             if (!comics.Equals(null))
             {
                 cover = comics.Cover;
-                return File(cover, "image/jpg");
+                return File(cover, imageFileType);
             }
             return View("Index");
         }
@@ -101,7 +105,7 @@ namespace ComicsWebApp.Controllers
             if (!comicsPage.Equals(null))
             {
                 page = comicsPage.Content;
-                return File(page, "image/jpg");
+                return File(page, imageFileType);
             }
             return View("Index");
         }
@@ -140,13 +144,22 @@ namespace ComicsWebApp.Controllers
 
         public ComicsViewModel CreateComicsViewModelFromDatabase(Comics comics)
         {
-            var comicsViewModel = new ComicsViewModel();
+            return new ComicsViewModel
+            {
+                Comics = comics,
+                ListOfGenres = comics.Genres,
+                ListOfPages = comics.Pages,
+            };
+        }
 
-            comicsViewModel.Comics = comics;
-            comicsViewModel.ListOfGenres = comics.Genres;
-            comicsViewModel.ListOfPages = comics.Pages;
-
-            return comicsViewModel;
+        public ComicsViewModel CreateNewComicsViewModelFromExisting (ComicsViewModel existingComicsViewModel)
+        {
+            return new ComicsViewModel
+            {
+                Comics = existingComicsViewModel.Comics,
+                ListOfGenres = existingComicsViewModel.ListOfGenres,
+                ListOfPages = existingComicsViewModel.ListOfPages,
+            };
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
