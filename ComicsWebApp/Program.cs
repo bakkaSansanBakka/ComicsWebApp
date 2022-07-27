@@ -1,5 +1,7 @@
 using ComicsWebApp.Data;
+using ComicsWebApp.Models;
 using ComicsWebApp.Utilities;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +19,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddAutoMapper(typeof(AppMappingProfile));
+builder.Services.AddScoped<IValidator<ComicsViewModel>, ComicsViewModelValidator>();
 
 var app = builder.Build();
 

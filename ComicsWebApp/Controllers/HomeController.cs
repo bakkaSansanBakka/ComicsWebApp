@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using ComicsWebApp.Data;
 using ComicsWebApp.Models;
+using ComicsWebApp.Utilities;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,12 +17,14 @@ namespace ComicsWebApp.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly ComicsDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IValidator<ComicsViewModel> _comicsViewModelValidator;
 
-        public HomeController(ILogger<HomeController> logger, ComicsDbContext context, IMapper mapper)
+        public HomeController(ILogger<HomeController> logger, ComicsDbContext context, IMapper mapper, IValidator<ComicsViewModel> comicsViewModelValidator)
         {
             _logger = logger;
             _context = context;
             _mapper = mapper;
+            _comicsViewModelValidator = comicsViewModelValidator;
         }
 
         public IActionResult Index()
@@ -40,8 +45,16 @@ namespace ComicsWebApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult AddComics(ComicsViewModel comicsViewModel, IFormFile coverFile)
+        public async Task<IActionResult> AddComics(ComicsViewModel comicsViewModel, IFormFile coverFile)
         {
+            ValidationResult result = await _comicsViewModelValidator.ValidateAsync(comicsViewModel);
+
+            if (!result.IsValid)
+            {
+                result.AddToModelState(this.ModelState);
+                return View("AddComics");
+            }
+
             comicsViewModel.ListOfGenres = new List<ComicsGenre>();
             comicsViewModel.ListOfPages = new List<ComicsPages>();
 

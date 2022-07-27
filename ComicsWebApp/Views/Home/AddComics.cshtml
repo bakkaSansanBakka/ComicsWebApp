@@ -35,11 +35,13 @@
                 @Html.ListBoxFor(model => model.GenresIds,
                     new MultiSelectList(Model.AllGenresList, "Value", "Text"),
                     new { @class = "form-control", multiple = "multiple", id = "Genres_dropdown" })
+                <span asp-validation-for="GenresIds" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="Comics.Cover" class="control-label">Cover</label>
                 <input asp-for="Comics.Cover" class="form-control" type="file" name="CoverFile" />
+                <span asp-validation-for="Comics.Cover" class="text-danger"></span>
             </div>
 
             <div class="form-group">
