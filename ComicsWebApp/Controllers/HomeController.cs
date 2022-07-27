@@ -1,4 +1,5 @@
-﻿using ComicsWebApp.Data;
+﻿using AutoMapper;
+using ComicsWebApp.Data;
 using ComicsWebApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,11 +13,13 @@ namespace ComicsWebApp.Controllers
         private readonly string imageFileType = "image/jpg";
         private readonly ILogger<HomeController> _logger;
         private readonly ComicsDbContext _context;
+        private readonly IMapper _mapper;
 
-        public HomeController(ILogger<HomeController> logger, ComicsDbContext context)
+        public HomeController(ILogger<HomeController> logger, ComicsDbContext context, IMapper mapper)
         {
             _logger = logger;
             _context = context;
+            _mapper = mapper;
         }
 
         public IActionResult Index()
@@ -32,7 +35,7 @@ namespace ComicsWebApp.Controllers
         public IActionResult AddComics()
         {
             var comicsViewModel = new ComicsViewModel();
-            comicsViewModel.Genres = _context.ComicsGenres.Select(g => new SelectListItem { Text = g.GenreName, Value = g.Id.ToString() }).ToList();
+            comicsViewModel.AllGenresList = _context.ComicsGenres.Select(g => new SelectListItem { Text = g.GenreName, Value = g.Id.ToString() }).ToList();
             return View(comicsViewModel);
         }
 
@@ -81,7 +84,7 @@ namespace ComicsWebApp.Controllers
 
             comicsViewModel.Comics.Id = _context.Comics.FirstOrDefault(c => c.Name == comics.Name).Id;
 
-            var comicsResponseViewModel = CreateNewComicsViewModelFromExisting(comicsViewModel);
+            var comicsResponseViewModel = _mapper.Map<ComicsViewModel>(comicsViewModel);
 
             return View("ComicsInfo", comicsResponseViewModel);
         }
@@ -137,29 +140,10 @@ namespace ComicsWebApp.Controllers
                 _context.SaveChanges();
             }
 
-            var comicsViewModel = CreateComicsViewModelFromDatabase(comics);
+            var comicsViewModel = _mapper.Map<ComicsViewModel>(comics);
+            comicsViewModel.Comics = comics;
 
             return View("ComicsInfo", comicsViewModel);
-        }
-
-        public ComicsViewModel CreateComicsViewModelFromDatabase(Comics comics)
-        {
-            return new ComicsViewModel
-            {
-                Comics = comics,
-                ListOfGenres = comics.Genres,
-                ListOfPages = comics.Pages,
-            };
-        }
-
-        public ComicsViewModel CreateNewComicsViewModelFromExisting (ComicsViewModel existingComicsViewModel)
-        {
-            return new ComicsViewModel
-            {
-                Comics = existingComicsViewModel.Comics,
-                ListOfGenres = existingComicsViewModel.ListOfGenres,
-                ListOfPages = existingComicsViewModel.ListOfPages,
-            };
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
