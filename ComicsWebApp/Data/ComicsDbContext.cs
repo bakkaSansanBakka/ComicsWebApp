@@ -27,6 +27,18 @@ namespace ComicsWebApp.Data
                 .Property(c => c.CoverType)
                 .HasConversion<string>();
 
+            modelBuilder.Entity<Comics>()
+                .Property(c => c.PagesNumber)
+                .HasMaxLength(4);
+
+            modelBuilder.Entity<Comics>()
+                .Property(c => c.YearOfPublisihing)
+                .HasMaxLength(4);
+
+            modelBuilder.Entity<Comics>()
+                .Property(c => c.Price)
+                .HasMaxLength(8);
+
             modelBuilder.Entity<ComicsGenre>().HasData(
                 new ComicsGenre[]
                 {
