@@ -44,7 +44,7 @@ namespace ComicsWebApp.Models
         public ComicsAvailabilityStatus AvailabilityStatus { get; set; }
         public int PagesNumber { get; set; }
         public string PublicationFormat { get; set; }
-        public int YearOfPublisihing { get; set; }
+        public int YearOfPublication { get; set; }
         public string? Description { get; set; }
 
         public List<ComicsGenre> Genres { get; set; } = new List<ComicsGenre>();

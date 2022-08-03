@@ -70,7 +70,7 @@ namespace ComicsWebApp.Controllers
                 AvailabilityStatus = comicsViewModel.Comics.AvailabilityStatus,
                 PagesNumber = comicsViewModel.Comics.PagesNumber,
                 PublicationFormat = comicsViewModel.Comics.PublicationFormat,
-                YearOfPublisihing = comicsViewModel.Comics.YearOfPublisihing,
+                YearOfPublication = comicsViewModel.Comics.YearOfPublication,
                 Description = comicsViewModel.Comics.Description,
             };
 

@@ -32,12 +32,28 @@ namespace ComicsWebApp.Data
                 .HasMaxLength(4);
 
             modelBuilder.Entity<Comics>()
-                .Property(c => c.YearOfPublisihing)
+                .Property(c => c.YearOfPublication)
                 .HasMaxLength(4);
 
             modelBuilder.Entity<Comics>()
                 .Property(c => c.Price)
                 .HasMaxLength(8);
+
+            modelBuilder.Entity<Comics>()
+                .Property(c => c.Name)
+                .HasMaxLength(200);
+
+            modelBuilder.Entity<Comics>()
+                .Property(c => c.Author)
+                .HasMaxLength(100);
+
+            modelBuilder.Entity<Comics>()
+                .Property(c => c.Publisher)
+                .HasMaxLength(70);
+
+            modelBuilder.Entity<Comics>()
+                .Property(c => c.PublicationFormat)
+                .HasMaxLength(15);
 
             modelBuilder.Entity<ComicsGenre>().HasData(
                 new ComicsGenre[]
