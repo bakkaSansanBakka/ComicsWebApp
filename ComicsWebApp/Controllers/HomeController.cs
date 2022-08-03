@@ -52,7 +52,8 @@ namespace ComicsWebApp.Controllers
             if (!result.IsValid)
             {
                 result.AddToModelState(this.ModelState);
-                return View("AddComics");
+                comicsViewModel.AllGenresList = _context.ComicsGenres.Select(g => new SelectListItem { Text = g.GenreName, Value = g.Id.ToString() }).ToList();
+                return View("AddComics", comicsViewModel);
             }
 
             comicsViewModel.ListOfGenres = new List<ComicsGenre>();
