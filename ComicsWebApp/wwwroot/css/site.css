@@ -21,3 +21,37 @@ body {
     background-image: none;
     background-color: #d0d0d08d;
 }
+
+a.underlinedLink, button.underlinedLink {
+    position: relative;
+    padding-bottom: 7px;
+    margin-right: 5px;
+    text-decoration: none;
+}
+
+a.underlinedLink:hover {
+    color: #ff0000;
+}
+
+a.underlinedLink:hover i.underlinedLinkBar, button.underlinedLink:hover i.underlinedLinkBar {
+    width: 100%;
+}
+
+a.underlinedLink i.underlinedLinkBar, button.underlinedLink i.underlinedLinkBar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #cc0101;
+    transition: all .3s ease-in-out;
+}
+
+.black-footer {
+    background-color: #131212;
+    color: #d6d6d6;
+}
+
+.black-footer .container {
+    color: #b9b8b8;
+}

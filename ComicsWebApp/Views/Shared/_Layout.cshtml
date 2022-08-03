@@ -22,15 +22,22 @@
                     <div class="navbar justify-content-start">
                         <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark underlinedLink" asp-area="" asp-controller="Home" asp-action="Index">
+                                Home
+                                <i class="underlinedLinkBar"></i>
+                            </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark underlinedLink" asp-area="" asp-controller="Home" asp-action="Privacy">
+                                Privacy
+                                <i class="underlinedLinkBar"></i>
+                            </a>
                         </li>
                         </ul>
                         <div class="dropdown">
-                          <button class="btn dropdown-toggle" type="button" id="dropdownMenuCatalogButton" data-bs-toggle="dropdown" aria-expanded="false">
+                          <button class="btn dropdown-toggle underlinedLink" type="button" id="dropdownMenuCatalogButton" data-bs-toggle="dropdown" aria-expanded="false">
                             Catalog
+                            <i class="underlinedLinkBar"></i>
                           </button>
                           <ul class="dropdown-menu" aria-labelledby="dropdownMenuCatalogButton">
                             <li><a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="AddComics">Add Comics</a></li>
@@ -48,9 +55,9 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted black-footer">
         <div class="container">
-            &copy; 2022 - Comics Shop - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; Copyright - Comics Shop 2022 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
     @*<script src="~/lib/jquery/dist/jquery.min.js"></script>*@
