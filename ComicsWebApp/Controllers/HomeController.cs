@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ComicsWebApp.Data;
+using ComicsWebApp.Data.Models;
 using ComicsWebApp.Models;
 using ComicsWebApp.Utilities;
 using FluentValidation;

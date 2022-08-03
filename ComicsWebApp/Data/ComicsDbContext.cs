@@ -1,4 +1,4 @@
-﻿using ComicsWebApp.Models;
+﻿using ComicsWebApp.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ComicsWebApp.Data

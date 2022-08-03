@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace ComicsWebApp.Models
+namespace ComicsWebApp.Data.Models
 {
 
     public enum ComicsLanguage

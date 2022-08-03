@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ComicsWebApp.Data.Models;
 using ComicsWebApp.Models;
 
 namespace ComicsWebApp.Utilities

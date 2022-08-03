@@ -1,4 +1,4 @@
-﻿namespace ComicsWebApp.Models
+﻿namespace ComicsWebApp.Data.Models
 {
     public class ComicsPages
     {

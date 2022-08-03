@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using ComicsWebApp.Data.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace ComicsWebApp.Models
 {
