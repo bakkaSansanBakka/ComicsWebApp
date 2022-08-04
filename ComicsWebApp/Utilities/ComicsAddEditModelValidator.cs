@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace ComicsWebApp.Utilities
 {
-    public class ComicsViewModelValidator : AbstractValidator<ComicsViewModel>
+    public class ComicsAddEditModelValidator : AbstractValidator<ComicsAddEditModel>
     {
-        public ComicsViewModelValidator()
+        public ComicsAddEditModelValidator()
         {
             RuleFor(c => c.Comics.Name)
                 .NotEmpty()
@@ -25,9 +25,6 @@ namespace ComicsWebApp.Utilities
 
             RuleFor(c => c.Comics.CoverType)
                 .IsInEnum();
-
-            RuleFor(c => c.Comics.Cover)
-                .NotNull();
 
             RuleFor(c => c.Comics.Language)
                 .IsInEnum();

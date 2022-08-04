@@ -26,7 +26,7 @@ try
         .AddEntityFrameworkStores<ApplicationDbContext>();
     builder.Services.AddControllersWithViews();
     builder.Services.AddAutoMapper(typeof(AppMappingProfile));
-    builder.Services.AddScoped<IValidator<ComicsViewModel>, ComicsViewModelValidator>();
+    builder.Services.AddScoped<IValidator<ComicsAddEditModel>, ComicsAddEditModelValidator>();
 
     var app = builder.Build();
 

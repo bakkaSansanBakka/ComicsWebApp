@@ -1,4 +1,4 @@
-﻿@model ComicsWebApp.Models.ComicsViewModel
+﻿@model ComicsWebApp.Models.ComicsAddEditModel
 @using ComicsWebApp.Data.Models
 
 @{
@@ -41,7 +41,7 @@
 
             <div class="form-group">
                 <label asp-for="Comics.Cover" class="control-label">Cover</label>
-                <input asp-for="Comics.Cover" class="form-control" type="file" name="CoverFile" />
+                <input asp-for="Comics.Cover" class="form-control" type="file" name="CoverFile" required/>
                 <span asp-validation-for="Comics.Cover" class="text-danger"></span>
             </div>
 

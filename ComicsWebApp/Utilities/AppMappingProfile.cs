@@ -12,7 +12,7 @@ namespace ComicsWebApp.Utilities
                 .ForMember(dest => dest.ListOfGenres, opt => opt.MapFrom(src => src.Genres))
                 .ForMember(dest => dest.ListOfPages, opt => opt.MapFrom(src => src.Pages));
 
-            CreateMap<ComicsViewModel, ComicsViewModel>();
+            CreateMap<ComicsAddEditModel, ComicsViewModel>();
         }
     }
 }
