@@ -16,6 +16,7 @@ try
 
     // Add services to the container.
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseSqlServer(connectionString));
     builder.Services.AddDbContext<ComicsDbContext>(options =>
@@ -24,7 +25,7 @@ try
 
     builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
         .AddEntityFrameworkStores<ApplicationDbContext>();
-    builder.Services.AddControllersWithViews();
+    var mvc = builder.Services.AddControllersWithViews();
     builder.Services.AddAutoMapper(typeof(AppMappingProfile));
     builder.Services.AddScoped<IValidator<ComicsAddEditModel>, ComicsAddEditModelValidator>();
 
@@ -34,6 +35,7 @@ try
     if (app.Environment.IsDevelopment())
     {
         app.UseMigrationsEndPoint();
+        mvc.AddRazorRuntimeCompilation();
     }
     else
     {
