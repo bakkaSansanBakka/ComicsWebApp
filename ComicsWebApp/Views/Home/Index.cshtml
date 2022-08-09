@@ -1,8 +1,25 @@
-﻿@{
+﻿@model ComicsWebApp.Models.ListOfComicsViewModel
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<head>
+    <link rel="stylesheet" href="~/css/Index.css" asp-append-version="true" />
+</head>
+
+@if (Model.ListOfComics.Count > 0)
+{
+    <div class="container">
+        <div class="row">
+            @foreach (var comics in Model.ListOfComics)
+            {
+                <div class="col comics-card">
+                    <a href="@Url.Action("ComicsInfo", "Home", new { id = comics.Id }, null)"><img src="@Url.Action("RenderPhoto", "Home", new {id = @comics.Id })" /></a>
+                    <div>@Html.ActionLink($"{@comics.Name}", "ComicsInfo", "Home", new { id = comics.Id })</div>
+                    <div class="price">$@comics.Price</div>
+                </div>
+            }
+        </div>
+    </div>
+}

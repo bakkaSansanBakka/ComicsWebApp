@@ -30,7 +30,9 @@ namespace ComicsWebApp.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var listOfComicsViewModel = new ListOfComicsViewModel();
+            listOfComicsViewModel.ListOfComics = _context.Comics.ToList();
+            return View(listOfComicsViewModel);
         }
 
         public IActionResult Privacy()
@@ -102,6 +104,25 @@ namespace ComicsWebApp.Controllers
             var comicsResponseViewModel = _mapper.Map<ComicsViewModel>(comicsAddEditModel);
 
             return View("ComicsInfo", comicsResponseViewModel);
+        }
+
+        public ActionResult ComicsInfo(int id)
+        {
+            var comicsViewModel = new ComicsViewModel();
+            comicsViewModel.ListOfGenres = new List<ComicsGenre>();
+            comicsViewModel.ListOfPages = new List<ComicsPages>();
+
+            comicsViewModel.Comics = _context.Comics.FirstOrDefault(c => c.Id == id);
+
+            var listOfGenres = _context.Comics.Where(x => x.Id == id).SelectMany(x => x.Genres);
+            foreach (var genre in listOfGenres)
+            {
+                comicsViewModel.ListOfGenres.Add(genre);
+            }
+
+            comicsViewModel.ListOfPages = _context.ComicsPages.Include(p => p.Comics).Where(p => p.ComicsId == id).ToList();
+
+            return View(comicsViewModel);
         }
 
         public ActionResult RenderPhoto(int id)

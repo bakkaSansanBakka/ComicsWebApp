@@ -1,0 +1,35 @@
+﻿.comics-card {
+    padding: 10px;
+    max-width: 222px;
+    transition: box-shadow .3s;
+}
+
+.comics-card:hover {
+    box-shadow: 0 0 11px rgba(33,33,33,.2);
+}
+
+.comics-card img {
+    height: 286px;
+    width: 195px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.comics-card div {
+    text-align: center;
+}
+
+.price {
+    color: red;
+}
+
+.comics-card a {
+    color: black;
+    text-decoration: none;
+    transition: color 0.5s;
+}
+
+.comics-card a:hover {
+    color: #808080;
+}
