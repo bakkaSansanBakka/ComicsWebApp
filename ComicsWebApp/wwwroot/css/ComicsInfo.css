@@ -22,8 +22,13 @@
     font-weight: bold;
 }
 
-.main-image {
+.pages-carousel {
     margin-right: 20px;
+}
+
+.pages-carousel .carousel-inner, .pages-carousel .carousel-item, .pages-carousel img {
+    width: 290px; 
+    height: 440px;
 }
 
 .button-edit {

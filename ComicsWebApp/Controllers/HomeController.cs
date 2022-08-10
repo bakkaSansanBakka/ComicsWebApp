@@ -152,7 +152,7 @@ namespace ComicsWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> AddPages(List<IFormFile> pagesFiles, int id)
         {
-            var comics = _context.Comics.Include(c => c.Genres).FirstOrDefault(c => c.Id == id);
+            var comics = _context.Comics.Include(c => c.Genres).Include(c => c.Pages).FirstOrDefault(c => c.Id == id);
 
             if (!pagesFiles.Equals(null))
             {
