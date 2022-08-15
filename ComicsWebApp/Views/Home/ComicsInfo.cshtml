@@ -34,8 +34,8 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                    <label asp-for="ListOfPages" class="control-label">Add Pages</label>
-                    <input asp-for="ListOfPages" class="form-control" type="file" name="pagesFiles" multiple />
+                    <label asp-for="Comics.Pages" class="control-label">Add Pages</label>
+                    <input asp-for="Comics.Pages" class="form-control" type="file" name="pagesFiles" multiple />
                 </div>
                 <div class="modal-footer">
                     <input id="cancelAddPagesModalButton" type="button" class="btn btn-default" data-bs-dismiss="modal" value="Cancel" />
@@ -51,9 +51,9 @@
     <div id="pagesCarousel" class="carousel slide pages-carousel" data-bs-ride="carousel" data-bs-interval="false">
         <div class="carousel-indicators">
             <button type="button" data-bs-target="#pagesCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            @if (Model.ListOfPages.Count > 0)
+            @if (Model.Comics.Pages.Count > 0)
             {
-                @for (int i = 1; i < Model.ListOfPages.Count + 1; i++)
+                @for (int i = 1; i < Model.Comics.Pages.Count + 1; i++)
                 {
                     <button type="button" data-bs-target="#pagesCarousel" data-bs-slide-to="@i" aria-label="Slide @i"></button>
                 }
@@ -63,9 +63,9 @@
             <div class="carousel-item active">
                 <img src="@Url.Action("RenderPhoto", "Home", new {id = Model.Comics.Id })" />
             </div>
-            @if (Model.ListOfPages.Count > 0)
+            @if (Model.Comics.Pages.Count > 0)
             {
-                @foreach (var comicsPage in Model.ListOfPages)
+                @foreach (var comicsPage in Model.Comics.Pages)
                 {
                     <div class="carousel-item">
                         <img  src="@Url.Action("RenderPage", "Home", new {id = comicsPage.Id })" />
@@ -97,7 +97,7 @@
                 <div><span class="span-bold">Publisher:</span> @Model.Comics.Publisher</div>
                 <div>
                     <span class="span-bold">Genres:</span>
-                    @foreach (var genre in Model.ListOfGenres)
+                    @foreach (var genre in Model.Comics.Genres)
                     {
                         <a href="">@genre.GenreName</a>
                     }
