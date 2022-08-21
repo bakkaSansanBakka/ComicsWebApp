@@ -42,7 +42,61 @@ namespace ComicsWebApp.Tests
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            var model = Assert.IsAssignableFrom<ListOfComicsViewModel>(viewResult.Model);
+            Assert.IsAssignableFrom<ListOfComicsViewModel>(viewResult.Model);
+        }
+
+        [Fact]
+        public void AddComicsReturnsViewResultWithAddEditModel()
+        {
+            // Arrange
+
+            // Act
+            var result = controller.AddComics();
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.IsAssignableFrom<ComicsAddEditModel>(viewResult.Model);
+        }
+
+        [Fact]
+        public void ComicsInfoReturnsViewResultWithComicsViewModel()
+        {
+            // Arrange
+            int comicsId = 4;
+
+            // Act
+            var result = controller.ComicsInfo(comicsId);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.IsAssignableFrom<ComicsViewModel>(viewResult.Model);
+        }
+
+        [Fact]
+        public void RenderPhotoReturnsFileWhenComicsFound()
+        {
+            // Arrange
+            int comicsId = 5;
+
+            // Act
+            var result = controller.RenderPhoto(comicsId);
+
+            // Assert
+            Assert.IsType<FileContentResult>(result);
+        }
+
+        [Fact]
+        public void RenderPhotoReturnsIndexViewResultWhenComicsNotFound()
+        {
+            // Arrange
+            int comicsId = -1;
+
+            // Act
+            var result = controller.RenderPhoto(comicsId);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result);
+            Assert.Equal("Index", viewResult.ViewName);
         }
     }
 }
