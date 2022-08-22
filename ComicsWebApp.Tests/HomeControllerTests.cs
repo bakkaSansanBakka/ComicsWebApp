@@ -33,7 +33,7 @@ namespace ComicsWebApp.Tests
         }
 
         [Fact]
-        public void IndexReturnsViewResultWithListOfComicsViewModel()
+        public void IndexReturnsViewResultWithListOfComics()
         {
             // Arrange
 
@@ -42,7 +42,7 @@ namespace ComicsWebApp.Tests
 
             // Assert
             var viewResult = Assert.IsType<ViewResult>(result);
-            Assert.IsAssignableFrom<ListOfComicsViewModel>(viewResult.Model);
+            Assert.IsAssignableFrom<List<Comics>>(viewResult.Model);
         }
 
         [Fact]

@@ -8,6 +8,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.IO.Pipelines;
 
 namespace ComicsWebApp.Controllers
 {
@@ -34,9 +35,8 @@ namespace ComicsWebApp.Controllers
 
         public IActionResult Index()
         {
-            var listOfComicsViewModel = new ListOfComicsViewModel();
-            listOfComicsViewModel.ListOfComics = comicsRepository.GetAll().ToList();
-            return View(listOfComicsViewModel);
+            var listOfComics = comicsRepository.GetAll();
+            return View(listOfComics);
         }
 
         public IActionResult Privacy()
@@ -46,8 +46,10 @@ namespace ComicsWebApp.Controllers
 
         public IActionResult AddComics()
         {
-            var comicsAddEditModel = new ComicsAddEditModel();
-            comicsAddEditModel.AllGenresList = comicsGenresRepository.GetAllAsSelectListItem().ToList();
+            var comicsAddEditModel = new ComicsAddEditModel
+            {
+                AllGenresList = comicsGenresRepository.GetAllAsSelectListItem().ToList()
+            };
             return View(comicsAddEditModel);
         }
 
@@ -63,23 +65,7 @@ namespace ComicsWebApp.Controllers
                 return View("AddComics", comicsAddEditModel);
             }
 
-            comicsAddEditModel.ListOfGenres = new List<ComicsGenre>();
-            comicsAddEditModel.ListOfPages = new List<ComicsPages>();
-
-            Comics comics = new Comics
-            {
-                Name = comicsAddEditModel.Comics.Name,
-                Author = comicsAddEditModel.Comics.Author,
-                Price = comicsAddEditModel.Comics.Price,
-                CoverType = comicsAddEditModel.Comics.CoverType,
-                Language = comicsAddEditModel.Comics.Language,
-                Publisher = comicsAddEditModel.Comics.Publisher,
-                AvailabilityStatus = comicsAddEditModel.Comics.AvailabilityStatus,
-                PagesNumber = comicsAddEditModel.Comics.PagesNumber,
-                PublicationFormat = comicsAddEditModel.Comics.PublicationFormat,
-                YearOfPublication = comicsAddEditModel.Comics.YearOfPublication,
-                Description = comicsAddEditModel.Comics.Description,
-            };
+            var comics = _mapper.Map<Comics>(comicsAddEditModel);
 
             if (comicsAddEditModel.GenresIds.Length > 0)
             {
@@ -87,7 +73,7 @@ namespace ComicsWebApp.Controllers
                 {
                     var comicsGenre = comicsGenresRepository.GetById(genreid);
                     comics.Genres.Add(comicsGenre);
-                    comicsAddEditModel.ListOfGenres.Add(comicsGenre);
+                    comicsAddEditModel.Genres.Add(comicsGenre);
                 }
             }
 
@@ -101,8 +87,9 @@ namespace ComicsWebApp.Controllers
             }
 
             comicsRepository.Create(comics);
+            comicsRepository.Save();
 
-            comicsAddEditModel.Comics.Id = comicsRepository.GetByName(comics.Name).Id;
+            comicsAddEditModel.Id = comicsRepository.GetByName(comics.Name).Id;
 
             var comicsResponseViewModel = _mapper.Map<ComicsViewModel>(comicsAddEditModel);
 
@@ -111,7 +98,8 @@ namespace ComicsWebApp.Controllers
 
         public ActionResult ComicsInfo(int id)
         {
-            var comicsViewModel = new ComicsViewModel { Comics = comicsRepository.GetById(id) };
+            var comics = comicsRepository.GetById(id);
+            var comicsViewModel = _mapper.Map<ComicsViewModel>(comics);
             return View(comicsViewModel);
         }
 
@@ -119,7 +107,7 @@ namespace ComicsWebApp.Controllers
         {
             byte[] cover;
             var comics = comicsRepository.GetById(id);
-            if (!comics.Equals(null))
+            if (comics != null)
             {
                 cover = comics.Cover;
                 return File(cover, imageFileType);
@@ -131,7 +119,7 @@ namespace ComicsWebApp.Controllers
         {
             byte[] page;
             var comicsPage = comicsPagesRepository.GetById(id);
-            if (!comicsPage.Equals(null))
+            if (comicsPage != null)
             {
                 page = comicsPage.Content;
                 return File(page, imageFileType);
@@ -144,7 +132,7 @@ namespace ComicsWebApp.Controllers
         {
             var comics = comicsRepository.GetById(id);
 
-            if (!pagesFiles.Equals(null))
+            if (pagesFiles != null)
             {
                 foreach (var pageFile in pagesFiles)
                 {
@@ -165,10 +153,11 @@ namespace ComicsWebApp.Controllers
                     comics.Pages.Add(page);
 
                     comicsPagesRepository.Create(page);
+                    comicsPagesRepository.Save();
                 }
             }
 
-            var comicsViewModel = new ComicsViewModel { Comics = comics };
+            var comicsViewModel = _mapper.Map<ComicsViewModel>(comics);
 
             return View("ComicsInfo", comicsViewModel);
         }

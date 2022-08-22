@@ -14,21 +14,21 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             
             <div class="form-group">
-                <label asp-for="Comics.Name" class="control-label" >Name</label>
-                <input asp-for="Comics.Name" class="form-control" />
-                <span asp-validation-for="Comics.Name" class="text-danger"></span>
+                <label asp-for="Name" class="control-label" >Name</label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Comics.Author" class="control-label">Author</label>
-                <input asp-for="Comics.Author" class="form-control" />
-                <span asp-validation-for="Comics.Author" class="text-danger"></span>
+                <label asp-for="Author" class="control-label">Author</label>
+                <input asp-for="Author" class="form-control" />
+                <span asp-validation-for="Author" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Comics.Price" class="control-label">Price in $</label>
-                <input asp-for="Comics.Price" class="form-control" />
-                <span asp-validation-for="Comics.Price" class="text-danger"></span>
+                <label asp-for="Price" class="control-label">Price in $</label>
+                <input asp-for="Price" class="form-control" value="" />
+                <span asp-validation-for="Price" class="text-danger"></span>
             </div>
 
             <div class="form-group">
@@ -40,69 +40,69 @@
             </div>
 
             <div class="form-group">
-                <label asp-for="Comics.Cover" class="control-label">Cover</label>
-                <input asp-for="Comics.Cover" class="form-control" type="file" name="CoverFile" required/>
-                <span asp-validation-for="Comics.Cover" class="text-danger"></span>
+                <label asp-for="Cover" class="control-label">Cover</label>
+                <input asp-for="Cover" class="form-control" type="file" name="CoverFile" required/>
+                <span asp-validation-for="Cover" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Comics.CoverType" class="control-label">Cover type</label>
-                <select asp-for="Comics.CoverType" 
+                <label asp-for="CoverType" class="control-label">Cover type</label>
+                <select asp-for="CoverType" 
                         class="form-control" 
                         asp-items="Html.GetEnumSelectList<CoverType>()">
                     <option selected="selected" value="">Select Cover Type</option>
                 </select>
-                <span asp-validation-for="Comics.CoverType" class="text-danger"></span>
+                <span asp-validation-for="CoverType" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Comics.Language" class="control-label">Language</label>
-                <select asp-for="Comics.Language" 
+                <label asp-for="Language" class="control-label">Language</label>
+                <select asp-for="Language" 
                         class="form-control" 
                         asp-items="Html.GetEnumSelectList<ComicsLanguage>()">
                     <option selected="selected" value="">Select Language of Comics</option>
                 </select>
-                <span asp-validation-for="Comics.Language" class="text-danger"></span>
+                <span asp-validation-for="Language" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Comics.Publisher" class="control-label">Publisher</label>
-                <input asp-for="Comics.Publisher" class="form-control" />
-                <span asp-validation-for="Comics.Publisher" class="text-danger"></span>
+                <label asp-for="Publisher" class="control-label">Publisher</label>
+                <input asp-for="Publisher" class="form-control" />
+                <span asp-validation-for="Publisher" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Comics.AvailabilityStatus" class="control-label">Availability status</label>
-                <select asp-for="Comics.AvailabilityStatus" 
+                <label asp-for="AvailabilityStatus" class="control-label">Availability status</label>
+                <select asp-for="AvailabilityStatus" 
                         class="form-control" 
                         asp-items="Html.GetEnumSelectList<ComicsAvailabilityStatus>()">
                     <option selected="selected" value="">Select Availability Status</option>
                 </select>
-                <span asp-validation-for="Comics.AvailabilityStatus" class="text-danger"></span>
+                <span asp-validation-for="AvailabilityStatus" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Comics.PagesNumber" class="control-label">Number of pages</label>
-                <input asp-for="Comics.PagesNumber" class="form-control" />
-                <span asp-validation-for="Comics.PagesNumber" class="text-danger"></span>
+                <label asp-for="PagesNumber" class="control-label">Number of pages</label>
+                <input asp-for="PagesNumber" class="form-control" value="" />
+                <span asp-validation-for="PagesNumber" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Comics.PublicationFormat" class="control-label">Format of Publication</label>
-                <input asp-for="Comics.PublicationFormat" class="form-control" />
-                <span asp-validation-for="Comics.PublicationFormat" class="text-danger"></span>
+                <label asp-for="PublicationFormat" class="control-label">Format of Publication</label>
+                <input asp-for="PublicationFormat" class="form-control" />
+                <span asp-validation-for="PublicationFormat" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Comics.YearOfPublication" class="control-label">Year of Publication</label>
-                <input asp-for="Comics.YearOfPublication" class="form-control" />
-                <span asp-validation-for="Comics.YearOfPublication" class="text-danger"></span>
+                <label asp-for="YearOfPublication" class="control-label">Year of Publication</label>
+                <input asp-for="YearOfPublication" class="form-control" value="" />
+                <span asp-validation-for="YearOfPublication" class="text-danger"></span>
             </div>
 
             <div class="form-group">
-                <label asp-for="Comics.Description" class="control-label">Description</label>
-                <textarea asp-for="Comics.Description" class="form-control" rows="6"></textarea>
-                <span asp-validation-for="Comics.Description" class="text-danger"></span>
+                <label asp-for="Description" class="control-label">Description</label>
+                <textarea asp-for="Description" class="form-control" rows="6"></textarea>
+                <span asp-validation-for="Description" class="text-danger"></span>
             </div>
 
             <div class="form-group">

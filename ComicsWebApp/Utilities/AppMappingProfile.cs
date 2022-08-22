@@ -9,6 +9,8 @@ namespace ComicsWebApp.Utilities
         public AppMappingProfile()
         {
             CreateMap<ComicsAddEditModel, ComicsViewModel>();
+            CreateMap<Comics, ComicsViewModel>();
+            CreateMap<ComicsAddEditModel, Comics>();
         }
     }
 }
