@@ -36,25 +36,5 @@ namespace ComicsWebApp.Data.Repositories
                 _context.Set<T>().Remove(item);
             }
         }
-        public void Save()
-        {
-            _context.SaveChanges();
-        }
-        public virtual void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    _context.Dispose();
-                }
-            }
-            this.disposed = true;
-        }
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
     }
 }

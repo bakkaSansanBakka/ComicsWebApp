@@ -16,9 +16,7 @@ namespace ComicsWebApp.Controllers
     {
         private readonly string imageFileType = "image/jpg";
         private readonly ILogger<HomeController> _logger;
-        private ComicsRepository comicsRepository;
-        private ComicsGenresRepository comicsGenresRepository;
-        private ComicsPagesRepository comicsPagesRepository;
+        private UnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IValidator<ComicsAddEditModel> _comicsAddEditModelValidator;
 
@@ -28,14 +26,12 @@ namespace ComicsWebApp.Controllers
             _mapper = mapper;
             _comicsAddEditModelValidator = comicsAddEditModelValidator;
 
-            comicsRepository = new ComicsRepository(context);
-            comicsGenresRepository = new ComicsGenresRepository(context);
-            comicsPagesRepository = new ComicsPagesRepository(context);
+            _unitOfWork = new UnitOfWork(context);
         }
 
         public IActionResult Index()
         {
-            var listOfComics = comicsRepository.GetAll();
+            var listOfComics = _unitOfWork.ComicsRepository.GetAll();
             return View(listOfComics);
         }
 
@@ -48,7 +44,7 @@ namespace ComicsWebApp.Controllers
         {
             var comicsAddEditModel = new ComicsAddEditModel
             {
-                AllGenresList = comicsGenresRepository.GetAllAsSelectListItem().ToList()
+                AllGenresList = _unitOfWork.ComicsGenresRepository.GetAllAsSelectListItem().ToList()
             };
             return View(comicsAddEditModel);
         }
@@ -61,7 +57,7 @@ namespace ComicsWebApp.Controllers
             if (!result.IsValid)
             {
                 result.AddToModelState(this.ModelState);
-                comicsAddEditModel.AllGenresList = comicsGenresRepository.GetAllAsSelectListItem().ToList();
+                comicsAddEditModel.AllGenresList = _unitOfWork.ComicsGenresRepository.GetAllAsSelectListItem().ToList();
                 return View("AddComics", comicsAddEditModel);
             }
 
@@ -71,7 +67,7 @@ namespace ComicsWebApp.Controllers
             {
                 foreach (var genreid in comicsAddEditModel.GenresIds)
                 {
-                    var comicsGenre = comicsGenresRepository.GetById(genreid);
+                    var comicsGenre = _unitOfWork.ComicsGenresRepository.GetById(genreid);
                     comics.Genres.Add(comicsGenre);
                     comicsAddEditModel.Genres.Add(comicsGenre);
                 }
@@ -86,10 +82,10 @@ namespace ComicsWebApp.Controllers
                 }
             }
 
-            comicsRepository.Create(comics);
-            comicsRepository.Save();
+            _unitOfWork.ComicsRepository.Create(comics);
+            _unitOfWork.Save();
 
-            comicsAddEditModel.Id = comicsRepository.GetByName(comics.Name).Id;
+            comicsAddEditModel.Id = _unitOfWork.ComicsRepository.GetByName(comics.Name).Id;
 
             var comicsResponseViewModel = _mapper.Map<ComicsViewModel>(comicsAddEditModel);
 
@@ -98,7 +94,7 @@ namespace ComicsWebApp.Controllers
 
         public ActionResult ComicsInfo(int id)
         {
-            var comics = comicsRepository.GetById(id);
+            var comics = _unitOfWork.ComicsRepository.GetById(id);
             var comicsViewModel = _mapper.Map<ComicsViewModel>(comics);
             return View(comicsViewModel);
         }
@@ -106,7 +102,7 @@ namespace ComicsWebApp.Controllers
         public ActionResult RenderPhoto(int id)
         {
             byte[] cover;
-            var comics = comicsRepository.GetById(id);
+            var comics = _unitOfWork.ComicsRepository.GetById(id);
             if (comics != null)
             {
                 cover = comics.Cover;
@@ -118,7 +114,7 @@ namespace ComicsWebApp.Controllers
         public ActionResult RenderPage(int id)
         {
             byte[] page;
-            var comicsPage = comicsPagesRepository.GetById(id);
+            var comicsPage = _unitOfWork.ComicsPagesRepository.GetById(id);
             if (comicsPage != null)
             {
                 page = comicsPage.Content;
@@ -130,7 +126,7 @@ namespace ComicsWebApp.Controllers
         [HttpPost]
         public async Task<IActionResult> AddPages(List<IFormFile> pagesFiles, int id)
         {
-            var comics = comicsRepository.GetById(id);
+            var comics = _unitOfWork.ComicsRepository.GetById(id);
 
             if (pagesFiles != null)
             {
@@ -152,8 +148,8 @@ namespace ComicsWebApp.Controllers
 
                     comics.Pages.Add(page);
 
-                    comicsPagesRepository.Create(page);
-                    comicsPagesRepository.Save();
+                    _unitOfWork.ComicsPagesRepository.Create(page);
+                    _unitOfWork.Save();
                 }
             }
 
