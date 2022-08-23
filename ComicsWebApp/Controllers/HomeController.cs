@@ -29,9 +29,16 @@ namespace ComicsWebApp.Controllers
             _unitOfWork = new UnitOfWork(context);
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(string searchString)
         {
+            ViewData["CurrentFilter"] = searchString;
+
             var listOfComics = _unitOfWork.ComicsRepository.GetAll();
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                listOfComics = _unitOfWork.ComicsRepository.GetAllMatchingSearch(searchString);
+            }
             return View(listOfComics);
         }
 

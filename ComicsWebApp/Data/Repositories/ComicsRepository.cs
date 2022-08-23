@@ -19,6 +19,12 @@ namespace ComicsWebApp.Data.Repositories
         {
             return _context.Comics.FirstOrDefault(c => c.Name == name);
         }
+        public List<Comics> GetAllMatchingSearch(string searchString)
+        {
+            return _context.Comics.Where(c => c.Name.Contains(searchString) 
+                || c.Publisher.Contains(searchString) 
+                || c.Description.Contains(searchString)).ToList();
+        }
         public IQueryable<ComicsGenre> GetGenresOfComics(int id)
         {
             return _context.Comics.Where(x => x.Id == id).SelectMany(x => x.Genres);
