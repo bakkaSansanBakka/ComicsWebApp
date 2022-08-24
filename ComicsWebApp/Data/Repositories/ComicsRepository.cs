@@ -1,5 +1,6 @@
 ﻿using ComicsWebApp.Data.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace ComicsWebApp.Data.Repositories
 {
@@ -28,6 +29,26 @@ namespace ComicsWebApp.Data.Repositories
         public IQueryable<ComicsGenre> GetGenresOfComics(int id)
         {
             return _context.Comics.Where(x => x.Id == id).SelectMany(x => x.Genres);
+        }
+
+        public List<Comics> OrderByName()
+        {
+            return _context.Comics.OrderBy(c => c.Name).ToList();
+        }
+
+        public List<Comics> OrderByIdDescending()
+        {
+            return _context.Comics.OrderByDescending(c => c.Id).ToList();
+        }
+
+        public List<Comics> OrderByPrice()
+        {
+            return _context.Comics.OrderBy(c => c.Price).ToList();
+        }
+
+        public List<Comics> OrderByPriceDescending()
+        {
+            return _context.Comics.OrderByDescending(c => c.Price).ToList();
         }
     }
 }

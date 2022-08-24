@@ -29,16 +29,37 @@ namespace ComicsWebApp.Controllers
             _unitOfWork = new UnitOfWork(context);
         }
 
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index(string searchString, string sortOrder)
         {
             ViewData["CurrentFilter"] = searchString;
 
-            var listOfComics = _unitOfWork.ComicsRepository.GetAll();
+            var listOfComics = _unitOfWork.ComicsRepository.OrderByIdDescending();
 
             if (!String.IsNullOrEmpty(searchString))
             {
                 listOfComics = _unitOfWork.ComicsRepository.GetAllMatchingSearch(searchString);
             }
+
+            switch(sortOrder)
+            {
+                case "nameAscending":
+                    listOfComics = _unitOfWork.ComicsRepository.OrderByName();
+                    ViewData["SortedBy"] = "by name";
+                    break;
+                case "priceDescending":
+                    listOfComics = _unitOfWork.ComicsRepository.OrderByPriceDescending();
+                    ViewData["SortedBy"] = "by price descending";
+                    break;
+                case "priceAscending":
+                    listOfComics = _unitOfWork.ComicsRepository.OrderByPrice();
+                    ViewData["SortedBy"] = "by price ascending";
+                    break;
+                default:
+                    listOfComics = _unitOfWork.ComicsRepository.OrderByIdDescending();
+                    ViewData["SortedBy"] = "";
+                    break;
+            }
+
             return View(listOfComics);
         }
 

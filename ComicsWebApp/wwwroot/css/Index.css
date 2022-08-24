@@ -24,6 +24,11 @@
     color: red;
 }
 
+.flex-container-center {
+    display: flex;
+    justify-content: center;
+}
+
 .comics-card a {
     color: black;
     text-decoration: none;
@@ -81,4 +86,8 @@ button[type="submit"]:hover {
 button[type="submit"]:focus,
 input[type="search"]:focus {
   outline: none;
+}
+
+.sort-dropdown {
+    margin-left: 10px;
 }

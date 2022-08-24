@@ -8,11 +8,22 @@
     <link rel="stylesheet" href="~/css/Index.css" asp-append-version="true" />
 </head>
 
-<div style="display: flex; justify-content: center">
+<div class="flex-container-center">
     <form asp-action="Index" method="get" class="search-form">
         <input type="search" name="SearchString" placeholder="Search" value="@ViewData["CurrentFilter"]" />
         <button type="submit">Search</button>
     </form>
+    <div class="dropdown sort-dropdown">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            Sort @ViewData["SortedBy"]
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="sortDropdown">
+            <li><a asp-action="Index" asp-route-sortOrder="noSort" class="dropdown-item">No sort</a></li>
+            <li><a asp-action="Index" asp-route-sortOrder="priceDescending" class="dropdown-item">by price descending</a></li>
+            <li><a asp-action="Index" asp-route-sortOrder="priceAscending" class="dropdown-item">by price ascending</a></li>
+            <li><a asp-action="Index" asp-route-sortOrder="nameAscending" class="dropdown-item">by name</a></li>
+        </ul>
+    </div>
 </div>
 
 @if (Model.Count > 0)
