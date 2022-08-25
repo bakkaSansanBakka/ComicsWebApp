@@ -1,4 +1,7 @@
-﻿@model List<ComicsWebApp.Data.Models.Comics>
+﻿@using X.PagedList
+@using X.PagedList.Mvc.Core
+@using X.PagedList.Web.Common
+@model IPagedList<ComicsWebApp.Data.Models.Comics>
 
 @{
     ViewData["Title"] = "Home Page";
@@ -40,6 +43,20 @@
             }
         </div>
     </div>
+    <nav>
+        @Html.PagedListPager(Model, page => Url.Action("Index", new { page = page }), new PagedListRenderOptions()
+        {
+            ActiveLiElementClass = "active",
+            PageClasses = new[]{ "page-link"},
+            LiElementClasses=new[] { "page-item" },
+            UlElementClasses = new[] { "pagination","justify-content-center", "mt-3" },
+            LinkToNextPageFormat = "Next",
+            LinkToPreviousPageFormat = "Previous",
+            MaximumPageNumbersToDisplay = 5,
+            DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+            DisplayLinkToNextPage = PagedListDisplayMode.Always
+        })
+    </nav>
 }
 
 @section Scripts {

@@ -1,6 +1,9 @@
 ﻿using ComicsWebApp.Data.Models;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Drawing.Printing;
 using System.Linq;
+using X.PagedList;
 
 namespace ComicsWebApp.Data.Repositories
 {
@@ -20,35 +23,34 @@ namespace ComicsWebApp.Data.Repositories
         {
             return _context.Comics.FirstOrDefault(c => c.Name == name);
         }
-        public List<Comics> GetAllMatchingSearch(string searchString)
+        public IPagedList<Comics> GetAllMatchingSearch(string searchString, int? page, int pageSize)
         {
             return _context.Comics.Where(c => c.Name.Contains(searchString) 
                 || c.Publisher.Contains(searchString) 
-                || c.Description.Contains(searchString)).ToList();
+                || c.Description.Contains(searchString)).ToPagedList(page ?? 1, pageSize);
         }
         public IQueryable<ComicsGenre> GetGenresOfComics(int id)
         {
             return _context.Comics.Where(x => x.Id == id).SelectMany(x => x.Genres);
         }
 
-        public List<Comics> OrderByName()
+        public IPagedList<Comics> OrderByName(int? page, int pageSize)
         {
-            return _context.Comics.OrderBy(c => c.Name).ToList();
+            return _context.Comics.OrderBy(c => c.Name).ToPagedList(page ?? 1, pageSize);
         }
 
-        public List<Comics> OrderByIdDescending()
+        public IPagedList<Comics> OrderByIdDescending(int? page, int pageSize)
         {
-            return _context.Comics.OrderByDescending(c => c.Id).ToList();
+            return _context.Comics.OrderByDescending(c => c.Id).ToPagedList(page ?? 1, pageSize);
+        }
+        public IPagedList<Comics> OrderByPrice(int? page, int pageSize)
+        {
+            return _context.Comics.OrderBy(c => c.Price).ToPagedList(page ?? 1, pageSize);
         }
 
-        public List<Comics> OrderByPrice()
+        public IPagedList<Comics> OrderByPriceDescending(int? page, int pageSize)
         {
-            return _context.Comics.OrderBy(c => c.Price).ToList();
-        }
-
-        public List<Comics> OrderByPriceDescending()
-        {
-            return _context.Comics.OrderByDescending(c => c.Price).ToList();
+            return _context.Comics.OrderByDescending(c => c.Price).ToPagedList(page ?? 1, pageSize);
         }
     }
 }

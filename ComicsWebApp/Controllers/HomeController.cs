@@ -29,33 +29,39 @@ namespace ComicsWebApp.Controllers
             _unitOfWork = new UnitOfWork(context);
         }
 
-        public async Task<IActionResult> Index(string searchString, string sortOrder)
+        public async Task<IActionResult> Index(string searchString, string sortOrder, int? page = 1)
         {
             ViewData["CurrentFilter"] = searchString;
 
-            var listOfComics = _unitOfWork.ComicsRepository.OrderByIdDescending();
+            if (page != null && page < 1)
+            {
+                page = 1;
+            }
+            var pageSize = 15;
+
+            var listOfComics = _unitOfWork.ComicsRepository.OrderByIdDescending(page, pageSize);
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                listOfComics = _unitOfWork.ComicsRepository.GetAllMatchingSearch(searchString);
+                listOfComics = _unitOfWork.ComicsRepository.GetAllMatchingSearch(searchString, page, pageSize);
             }
 
-            switch(sortOrder)
+            switch (sortOrder)
             {
                 case "nameAscending":
-                    listOfComics = _unitOfWork.ComicsRepository.OrderByName();
+                    listOfComics = _unitOfWork.ComicsRepository.OrderByName(page, pageSize);
                     ViewData["SortedBy"] = "by name";
                     break;
                 case "priceDescending":
-                    listOfComics = _unitOfWork.ComicsRepository.OrderByPriceDescending();
+                    listOfComics = _unitOfWork.ComicsRepository.OrderByPriceDescending(page, pageSize);
                     ViewData["SortedBy"] = "by price descending";
                     break;
                 case "priceAscending":
-                    listOfComics = _unitOfWork.ComicsRepository.OrderByPrice();
+                    listOfComics = _unitOfWork.ComicsRepository.OrderByPrice(page, pageSize);
                     ViewData["SortedBy"] = "by price ascending";
                     break;
                 default:
-                    listOfComics = _unitOfWork.ComicsRepository.OrderByIdDescending();
+                    listOfComics = _unitOfWork.ComicsRepository.OrderByIdDescending(page, pageSize);
                     ViewData["SortedBy"] = "";
                     break;
             }
