@@ -38,7 +38,8 @@ namespace ComicsWebApp.Data
 
             modelBuilder.Entity<Comics>()
                 .Property(c => c.Price)
-                .HasMaxLength(8);
+                .HasMaxLength(8)
+                .HasColumnType("money");
 
             modelBuilder.Entity<Comics>()
                 .Property(c => c.Name)
