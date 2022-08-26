@@ -4,7 +4,7 @@
 
 .flex-info-box {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     width: 100%
 }
 
@@ -31,14 +31,21 @@
     height: 440px;
 }
 
+.button-common {
+    margin-bottom: 10px;
+}
+
 .button-edit {
     width: 100px;
     height: 50px;
-    align-self: center;
 }
 
 .button-pages {
     width: 100px;
     height: 70px;
-    align-self: center;
+}
+
+.button-delete {
+    width: 100px;
+    height: 50px;
 }

@@ -41,11 +41,6 @@ namespace ComicsWebApp.Controllers
 
             var listOfComics = _unitOfWork.ComicsRepository.OrderByIdDescending(page, pageSize);
 
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                listOfComics = _unitOfWork.ComicsRepository.GetAllMatchingSearch(searchString, page, pageSize);
-            }
-
             switch (sortOrder)
             {
                 case "nameAscending":
@@ -64,6 +59,11 @@ namespace ComicsWebApp.Controllers
                     listOfComics = _unitOfWork.ComicsRepository.OrderByIdDescending(page, pageSize);
                     ViewData["SortedBy"] = "";
                     break;
+            }
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                listOfComics = _unitOfWork.ComicsRepository.GetAllMatchingSearch(searchString, page, pageSize);
             }
 
             return View(listOfComics);
@@ -190,6 +190,19 @@ namespace ComicsWebApp.Controllers
             var comicsViewModel = _mapper.Map<ComicsViewModel>(comics);
 
             return View("ComicsInfo", comicsViewModel);
+        }
+
+        public async Task<IActionResult> DeleteComics(int id)
+        {
+            var comics = _unitOfWork.ComicsRepository.GetById(id);
+            if (comics != null)
+            {
+                _unitOfWork.ComicsRepository.Delete(id);
+                await _unitOfWork.SaveAsync();
+                return RedirectToAction("Index");
+            }
+            else
+                return NotFound();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

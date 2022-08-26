@@ -52,6 +52,11 @@ namespace ComicsWebApp.Data.Repositories
         {
             context.SaveChanges();
         }
+
+        public async Task SaveAsync()
+        {
+            await context.SaveChangesAsync();
+        }
         protected virtual void Dispose(bool disposing)
         {
             if (!this.disposed)
