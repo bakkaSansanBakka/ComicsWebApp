@@ -7,6 +7,7 @@ using ComicsWebApp.Utilities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.Scaffolding.Shared.CodeModifier.CodeChange;
 using System.Diagnostics;
 using System.IO.Pipelines;
 
@@ -203,6 +204,72 @@ namespace ComicsWebApp.Controllers
             }
             else
                 return NotFound();
+        }
+
+        public IActionResult EditComics(int id)
+        {
+            List<int> genresIds = new List<int>();
+            var comicsEdit = _unitOfWork.ComicsRepository.GetById(id);
+            comicsEdit.Genres.ToList().ForEach(result => genresIds.Add(result.Id));
+
+            var comicsAddEditModel = _mapper.Map<ComicsAddEditModel>(comicsEdit);
+            comicsAddEditModel.AllGenresList = _unitOfWork.ComicsGenresRepository.GetAllAsSelectListItem().ToList();
+            comicsAddEditModel.GenresIds = genresIds.ToArray();
+
+            return View(comicsAddEditModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditComics(ComicsAddEditModel comicsAddEditModel, IFormFile coverFile)
+        {
+            ValidationResult result = await _comicsAddEditModelValidator.ValidateAsync(comicsAddEditModel);
+
+            if (!result.IsValid)
+            {
+                result.AddToModelState(this.ModelState);
+                comicsAddEditModel.AllGenresList = _unitOfWork.ComicsGenresRepository.GetAllAsSelectListItem().ToList();
+                return View(comicsAddEditModel);
+            }
+
+            var comics = _unitOfWork.ComicsRepository.GetByIdNoTracking(comicsAddEditModel.Id);
+
+            if (comicsAddEditModel.GenresIds.Length > 0)
+            {
+                _unitOfWork.ComicsRepository.ClearGenres(comics.Id);
+                foreach (var genreid in comicsAddEditModel.GenresIds)
+                {
+                    var comicsGenre = _unitOfWork.ComicsGenresRepository.GetById(genreid);
+                    comicsAddEditModel.Genres.Add(comicsGenre);
+                    _unitOfWork.ComicsRepository.AddGenres(comics.Id, genreid);
+                }
+            }
+
+            if (coverFile != null)
+            {
+                if (coverFile.Length > 0)
+                {
+                    using (var target = new MemoryStream())
+                    {
+                        coverFile.CopyTo(target);
+                        comicsAddEditModel.Cover = target.ToArray();
+                    }
+                }
+            }
+            else
+            {
+                comicsAddEditModel.Cover = comics.Cover;
+            }
+
+            comics = _mapper.Map<Comics>(comicsAddEditModel);
+
+            _unitOfWork.ComicsRepository.Update(comics);
+            _unitOfWork.Save();
+
+            var comicsResponseViewModel = _mapper.Map<ComicsViewModel>(comicsAddEditModel);
+
+            Console.WriteLine(comics.Cover.Length);
+
+            return View("ComicsInfo", comicsResponseViewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

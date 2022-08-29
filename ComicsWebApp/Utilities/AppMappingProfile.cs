@@ -10,7 +10,7 @@ namespace ComicsWebApp.Utilities
         {
             CreateMap<ComicsAddEditModel, ComicsViewModel>();
             CreateMap<Comics, ComicsViewModel>();
-            CreateMap<ComicsAddEditModel, Comics>();
+            CreateMap<ComicsAddEditModel, Comics>().ReverseMap();
         }
     }
 }

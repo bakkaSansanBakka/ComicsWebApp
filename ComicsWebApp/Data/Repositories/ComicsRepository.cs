@@ -15,6 +15,10 @@ namespace ComicsWebApp.Data.Repositories
         {
             _context = context;
         }
+        public Comics GetByIdNoTracking(int id)
+        {
+            return _context.Comics.AsNoTracking().Include(c => c.Genres).Include(c => c.Pages).FirstOrDefault(c => c.Id == id);
+        }
         public override Comics GetById(int id)
         {
             return _context.Comics.Include(c => c.Genres).Include(c => c.Pages).FirstOrDefault(c => c.Id == id);
@@ -32,6 +36,19 @@ namespace ComicsWebApp.Data.Repositories
         public IQueryable<ComicsGenre> GetGenresOfComics(int id)
         {
             return _context.Comics.Where(x => x.Id == id).SelectMany(x => x.Genres);
+        }
+
+        public void ClearGenres(int id)
+        {
+            var comicsGenres = _context.ComicsComicsGenres.Where(g => g.ComicsId == id);
+            _context.ComicsComicsGenres.RemoveRange(comicsGenres);
+        }
+
+        public void AddGenres(int comicsId, int genreId)
+        {
+             var comicsComicsGenre = new ComicsComicsGenres { ComicsId = comicsId, GenresId = genreId };
+
+            _context.ComicsComicsGenres.Add(comicsComicsGenre);
         }
 
         public IPagedList<Comics> OrderByName(int? page, int pageSize)
