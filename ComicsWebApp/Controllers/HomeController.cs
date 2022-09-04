@@ -7,9 +7,8 @@ using ComicsWebApp.Utilities;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.DotNet.Scaffolding.Shared.CodeModifier.CodeChange;
 using System.Diagnostics;
-using System.IO.Pipelines;
+using X.PagedList;
 
 namespace ComicsWebApp.Controllers
 {
@@ -193,6 +192,19 @@ namespace ComicsWebApp.Controllers
             return View("ComicsInfo", comicsViewModel);
         }
 
+        [HttpPost]
+        public ActionResult DeletePages(string[] pageIds, int id)
+        {
+            List<int> pageIdsAsList = pageIds.Select(x => Int32.Parse(x)).ToList();
+
+            foreach (var pageId in pageIdsAsList)
+            {
+                _unitOfWork.ComicsPagesRepository.Delete(pageId);
+                _unitOfWork.Save();
+            }
+            return RedirectToAction("ComicsInfo", new { id = id });
+        }
+
         public async Task<IActionResult> DeleteComics(int id)
         {
             var comics = _unitOfWork.ComicsRepository.GetById(id);
@@ -266,8 +278,6 @@ namespace ComicsWebApp.Controllers
             _unitOfWork.Save();
 
             var comicsResponseViewModel = _mapper.Map<ComicsViewModel>(comicsAddEditModel);
-
-            Console.WriteLine(comics.Cover.Length);
 
             return View("ComicsInfo", comicsResponseViewModel);
         }

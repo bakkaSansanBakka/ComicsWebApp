@@ -15,6 +15,12 @@
     }
 }
 
+@functions {
+    public static string GetCheckboxPageId(int comicsPageId) {
+        return $"comicsPageImage{comicsPageId}";
+    }
+}
+
 <head>
     <link rel="stylesheet" href="~/css/ComicsInfo.css" asp-append-version="true" />
 </head>
@@ -41,6 +47,43 @@
                     <input id="cancelAddPagesModalButton" type="button" class="btn btn-default" data-bs-dismiss="modal" value="Cancel" />
                     <input id="submitAddPagesModalButton" type="Submit" class="btn btn-success" value="Add" />
                 </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deletePagesModal" tabindex="-1"
+     aria-labelledby="deletePagesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="post" asp-controller="Home" asp-route-id="@Model.Id" asp-action="DeletePages">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deletePagesModalLabel">Delete Comics Pages</h5>
+                    <button id="closeDeletePagesModalButton" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        @if (Model.Pages.Count > 0)
+                        {
+                            <div class="row">
+                                @foreach (var comicsPage in Model.Pages)
+                                {
+                                    <div class="col comics-page">
+                                        <input type="checkbox" id="@GetCheckboxPageId(comicsPage.Id)" name="pageIds" value="@comicsPage.Id">
+                                        <label for="@GetCheckboxPageId(comicsPage.Id)">
+                                            <img src="@Url.Action("RenderPage", "Home", new {id = comicsPage.Id })" />
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                            
+                        }
+                    </div>
+                    <div class="modal-footer">
+                        <input id="cancelDeletePagesModalButton" type="button" class="btn btn-default" data-bs-dismiss="modal" value="Cancel" />
+                        <input id="submitDeletePagesModalButton" type="submit" class="btn btn-success" value="Delete" />
+                    </div>
                 </div>
             </form>
         </div>
@@ -124,13 +167,18 @@
             <input type="button" class="btn btn-success button-common button-edit" value="Edit"
                    onclick="location.href='@Url.Action("EditComics", "Home", new { id = @Model.Id })'" />
             <button id="showAddPagesModalButton" type="button" 
-                class="btn btn-primary button-common button-pages" 
-                data-bs-toggle="modal" data-bs-target="#addPagesModal">
+                    class="btn btn-primary button-common button-pages" 
+                    data-bs-toggle="modal" data-bs-target="#addPagesModal">
                 Add Pages
             </button>
+            <button id="showDeletePagesModalButton" type="button"
+                    class="btn btn-danger button-common button-pages"
+                    data-bs-toggle="modal" data-bs-target="#deletePagesModal">
+                Delete Pages
+            </button>
             <button id="showDeleteWarningModalButton" type="button"
-                class="btn btn-danger button-common button-delete"
-                data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    class="btn btn-danger button-common button-delete"
+                    data-bs-toggle="modal" data-bs-target="#deleteModal">
                 Delete
             </button>
         </div>
