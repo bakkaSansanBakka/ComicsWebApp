@@ -16,17 +16,16 @@ namespace ComicsWebApp.Controllers
     {
         private readonly string imageFileType = "image/jpg";
         private readonly ILogger<HomeController> _logger;
-        private UnitOfWork _unitOfWork;
+        private IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IValidator<ComicsAddEditModel> _comicsAddEditModelValidator;
 
-        public HomeController(ILogger<HomeController> logger, ComicsDbContext context, IMapper mapper, IValidator<ComicsAddEditModel> comicsAddEditModelValidator)
+        public HomeController(ILogger<HomeController> logger, ComicsDbContext context, IMapper mapper, IValidator<ComicsAddEditModel> comicsAddEditModelValidator, IUnitOfWork unitOfWork)
         {
             _logger = logger;
             _mapper = mapper;
             _comicsAddEditModelValidator = comicsAddEditModelValidator;
-
-            _unitOfWork = new UnitOfWork(context);
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IActionResult> Index(string searchString, string sortOrder, int? page = 1)
@@ -101,8 +100,9 @@ namespace ComicsWebApp.Controllers
             {
                 foreach (var genreid in comicsAddEditModel.GenresIds)
                 {
-                    var comicsGenre = _unitOfWork.ComicsGenresRepository.GetById(genreid);
-                    comics.Genres.Add(comicsGenre);
+                    var comicsGenreFromDb = _unitOfWork.ComicsGenresRepository.GetById(genreid);
+                    var comicsGenre = _mapper.Map<ComicsGenreDTO>(comicsGenreFromDb);
+                    comics.Genres.Add(comicsGenreFromDb);
                     comicsAddEditModel.Genres.Add(comicsGenre);
                 }
             }
@@ -215,14 +215,15 @@ namespace ComicsWebApp.Controllers
                 return RedirectToAction("Index");
             }
             else
+            {
                 return NotFound();
+            }
         }
 
         public IActionResult EditComics(int id)
         {
-            List<int> genresIds = new List<int>();
             var comicsEdit = _unitOfWork.ComicsRepository.GetById(id);
-            comicsEdit.Genres.ToList().ForEach(result => genresIds.Add(result.Id));
+            List<int> genresIds = comicsEdit.Genres.Select(g => g.Id).ToList();
 
             var comicsAddEditModel = _mapper.Map<ComicsAddEditModel>(comicsEdit);
             comicsAddEditModel.AllGenresList = _unitOfWork.ComicsGenresRepository.GetAllAsSelectListItem().ToList();
@@ -250,7 +251,8 @@ namespace ComicsWebApp.Controllers
                 _unitOfWork.ComicsRepository.ClearGenres(comics.Id);
                 foreach (var genreid in comicsAddEditModel.GenresIds)
                 {
-                    var comicsGenre = _unitOfWork.ComicsGenresRepository.GetById(genreid);
+                    var comicsGenreFromDb = _unitOfWork.ComicsGenresRepository.GetById(genreid);
+                    var comicsGenre = _mapper.Map<ComicsGenreDTO>(comicsGenreFromDb);
                     comicsAddEditModel.Genres.Add(comicsGenre);
                     _unitOfWork.ComicsRepository.AddGenres(comics.Id, genreid);
                 }
@@ -258,13 +260,10 @@ namespace ComicsWebApp.Controllers
 
             if (coverFile != null)
             {
-                if (coverFile.Length > 0)
+                using (var target = new MemoryStream())
                 {
-                    using (var target = new MemoryStream())
-                    {
-                        coverFile.CopyTo(target);
-                        comicsAddEditModel.Cover = target.ToArray();
-                    }
+                    coverFile.CopyTo(target);
+                    comicsAddEditModel.Cover = target.ToArray();
                 }
             }
             else

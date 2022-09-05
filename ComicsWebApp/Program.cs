@@ -1,4 +1,5 @@
 using ComicsWebApp.Data;
+using ComicsWebApp.Data.Repositories;
 using ComicsWebApp.Models;
 using ComicsWebApp.Utilities;
 using FluentValidation;
@@ -28,6 +29,7 @@ try
     builder.Services.AddControllersWithViews();
     builder.Services.AddAutoMapper(typeof(AppMappingProfile));
     builder.Services.AddScoped<IValidator<ComicsAddEditModel>, ComicsAddEditModelValidator>();
+    builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
     var app = builder.Build();
 

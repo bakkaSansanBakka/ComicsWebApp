@@ -19,7 +19,7 @@ namespace ComicsWebApp.Models
         public int YearOfPublication { get; set; }
         public string? Description { get; set; }
 
-        public List<ComicsGenre> Genres { get; set; } = new List<ComicsGenre>();
-        public List<ComicsPages> Pages { get; set; } = new List<ComicsPages>();
+        public List<ComicsGenreDTO> Genres { get; set; } = new List<ComicsGenreDTO>();
+        public List<ComicsPagesDTO> Pages { get; set; } = new List<ComicsPagesDTO>();
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 
 namespace ComicsWebApp.Data.Repositories
 {
-    public class UnitOfWork : IDisposable
+    public class UnitOfWork : IUnitOfWork, IDisposable
     {
         private ComicsDbContext context;
         private ComicsRepository comicsRepository;
