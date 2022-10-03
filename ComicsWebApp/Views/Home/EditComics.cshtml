@@ -2,19 +2,23 @@
 @using ComicsWebApp.Data.Models
 
 @{
-    ViewData["Title"] = "AddComics";
+    ViewData["Title"] = "EditComics";
 }
 
-<h1>Add Comics Form</h1>
+<head>
+    <link rel="stylesheet" href="~/css/EditComics.css" asp-append-version="true" />
+</head>
+
+<h1>Edit comics</h1>
 
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="AddComics" method="post" enctype="multipart/form-data">
+        <form asp-action="EditComics" method="post" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
+
             <div class="form-group">
-                <label asp-for="Name" class="control-label" >Name</label>
+                <label asp-for="Name" class="control-label">Name</label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
@@ -27,28 +31,30 @@
 
             <div class="form-group">
                 <label asp-for="Price" class="control-label">Price in $</label>
-                <input asp-for="Price" class="form-control" value="" />
+                <input asp-for="Price" class="form-control" value="@Model.Price" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="GenresIds" class="control-label">Genre</label>
                 @Html.ListBoxFor(model => model.GenresIds,
-                    new MultiSelectList(Model.AllGenresList, "Value", "Text"),
-                    new { @class = "form-control", multiple = "multiple", id = "Genres_dropdown" })
+                new MultiSelectList(Model.AllGenresList, "Value", "Text"),
+                new { @class = "form-control", multiple = "multiple", id = "Genres_dropdown" })
                 <span asp-validation-for="GenresIds" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <label asp-for="Cover" class="control-label">Cover</label>
-                <input asp-for="Cover" class="form-control" type="file" name="CoverFile" required/>
-                <span asp-validation-for="Cover" class="text-danger"></span>
+                <div>
+                    <img src="@Url.Action("RenderPhoto", "Home", new {id = Model.Id })" class="cover-image" />
+                </div>
+                <input asp-for="Cover" class="form-control" type="file" name="CoverFile" />
             </div>
 
             <div class="form-group">
                 <label asp-for="CoverType" class="control-label">Cover type</label>
-                <select asp-for="CoverType" 
-                        class="form-control" 
+                <select asp-for="CoverType"
+                        class="form-control"
                         asp-items="Html.GetEnumSelectList<CoverType>()">
                     <option selected="selected" value="">Select Cover Type</option>
                 </select>
@@ -57,8 +63,8 @@
 
             <div class="form-group">
                 <label asp-for="Language" class="control-label">Language</label>
-                <select asp-for="Language" 
-                        class="form-control" 
+                <select asp-for="Language"
+                        class="form-control"
                         asp-items="Html.GetEnumSelectList<ComicsLanguage>()">
                     <option selected="selected" value="">Select Language of Comics</option>
                 </select>
@@ -73,8 +79,8 @@
 
             <div class="form-group">
                 <label asp-for="AvailabilityStatus" class="control-label">Availability status</label>
-                <select asp-for="AvailabilityStatus" 
-                        class="form-control" 
+                <select asp-for="AvailabilityStatus"
+                        class="form-control"
                         asp-items="Html.GetEnumSelectList<ComicsAvailabilityStatus>()">
                     <option selected="selected" value="">Select Availability Status</option>
                 </select>
@@ -83,7 +89,7 @@
 
             <div class="form-group">
                 <label asp-for="PagesNumber" class="control-label">Number of pages</label>
-                <input asp-for="PagesNumber" class="form-control" value="" />
+                <input asp-for="PagesNumber" class="form-control" value="@Model.PagesNumber" />
                 <span asp-validation-for="PagesNumber" class="text-danger"></span>
             </div>
 
@@ -95,7 +101,7 @@
 
             <div class="form-group">
                 <label asp-for="YearOfPublication" class="control-label">Year of Publication</label>
-                <input asp-for="YearOfPublication" class="form-control" value="" />
+                <input asp-for="YearOfPublication" class="form-control" value="@Model.YearOfPublication" />
                 <span asp-validation-for="YearOfPublication" class="text-danger"></span>
             </div>
 
@@ -106,14 +112,10 @@
             </div>
 
             <div class="form-group">
-                <input type="submit" value="Add" class="btn btn-primary" />
+                <input type="submit" value="Update" class="btn btn-primary" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

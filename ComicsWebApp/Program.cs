@@ -1,4 +1,5 @@
 using ComicsWebApp.Data;
+using ComicsWebApp.Data.Repositories;
 using ComicsWebApp.Models;
 using ComicsWebApp.Utilities;
 using FluentValidation;
@@ -25,9 +26,10 @@ try
 
     builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
         .AddEntityFrameworkStores<ApplicationDbContext>();
-    var mvc = builder.Services.AddControllersWithViews();
+    builder.Services.AddControllersWithViews();
     builder.Services.AddAutoMapper(typeof(AppMappingProfile));
     builder.Services.AddScoped<IValidator<ComicsAddEditModel>, ComicsAddEditModelValidator>();
+    builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
     var app = builder.Build();
 
@@ -35,7 +37,6 @@ try
     if (app.Environment.IsDevelopment())
     {
         app.UseMigrationsEndPoint();
-        mvc.AddRazorRuntimeCompilation();
     }
     else
     {

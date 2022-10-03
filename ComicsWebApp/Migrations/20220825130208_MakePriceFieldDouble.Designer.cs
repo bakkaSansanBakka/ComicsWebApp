@@ -4,6 +4,7 @@ using ComicsWebApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ComicsWebApp.Migrations
 {
     [DbContext(typeof(ComicsDbContext))]
-    partial class ComicsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220825130208_MakePriceFieldDouble")]
+    partial class MakePriceFieldDouble
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,9 +65,9 @@ namespace ComicsWebApp.Migrations
                         .HasMaxLength(4)
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Price")
+                    b.Property<double>("Price")
                         .HasMaxLength(8)
-                        .HasColumnType("money");
+                        .HasColumnType("float");
 
                     b.Property<string>("PublicationFormat")
                         .IsRequired()

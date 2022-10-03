@@ -4,7 +4,7 @@
 
 .flex-info-box {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     width: 100%
 }
 
@@ -22,18 +22,82 @@
     font-weight: bold;
 }
 
-.main-image {
+.pages-carousel {
     margin-right: 20px;
+}
+
+.pages-carousel .carousel-inner, .pages-carousel .carousel-item, .pages-carousel img {
+    width: 290px; 
+    height: 440px;
+}
+
+.comics-page {
+    max-width: 200px;
+    margin: 10px;
+}
+
+.comics-page input[type="checkbox"] {
+    display: none;
+}
+
+.comics-page label {
+    border: 1px solid #fff;
+    padding: 10px;
+    display: block;
+    position: relative;
+    cursor: pointer;
+}
+
+.comics-page label:before {
+    background-color: white;
+    color: white;
+    content: " ";
+    display: block;
+    border-radius: 50%;
+    border: 1px solid grey;
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    transition-duration: 0.4s;
+    transform: scale(0);
+}
+
+.comics-page label img {
+    width: 200px;
+    height: 280px;
+    transition-duration: 0.2s;
+    transform-origin: 50% 50%;
+}
+
+:checked + label:before {
+  content: "✓";
+  background-color: grey;
+  transform: scale(1);
+}
+
+:checked + label img {
+  transform: scale(0.9);
+  z-index: -1;
+}
+
+.button-common {
+    margin-bottom: 10px;
 }
 
 .button-edit {
     width: 100px;
     height: 50px;
-    align-self: center;
 }
 
 .button-pages {
     width: 100px;
     height: 70px;
-    align-self: center;
+}
+
+.button-delete {
+    width: 100px;
+    height: 50px;
 }

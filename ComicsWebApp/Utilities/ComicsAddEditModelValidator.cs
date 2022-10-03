@@ -7,48 +7,48 @@ namespace ComicsWebApp.Utilities
     {
         public ComicsAddEditModelValidator()
         {
-            RuleFor(c => c.Comics.Name)
+            RuleFor(c => c.Name)
                 .NotEmpty()
                 .MaximumLength(200)
                 .WithMessage("Entered value is too long");
 
-            RuleFor(c => c.Comics.Author)
+            RuleFor(c => c.Author)
                 .NotEmpty()
                 .MaximumLength(100)
                 .WithMessage("Entered value is too long");
 
-            RuleFor(c => c.Comics.Price)
+            RuleFor(c => c.Price)
                 .GreaterThan(0)
                 .WithMessage("Price should be greater than 0.")
                 .InclusiveBetween(0, 10000)
                 .WithMessage("Price should be within the range of 0 and 10000.");
 
-            RuleFor(c => c.Comics.CoverType)
+            RuleFor(c => c.CoverType)
                 .IsInEnum();
 
-            RuleFor(c => c.Comics.Language)
+            RuleFor(c => c.Language)
                 .IsInEnum();
 
-            RuleFor(c => c.Comics.Publisher)
+            RuleFor(c => c.Publisher)
                 .NotEmpty()
                 .MaximumLength(70)
                 .WithMessage("Entered value is too long");
 
-            RuleFor(c => c.Comics.AvailabilityStatus)
+            RuleFor(c => c.AvailabilityStatus)
                 .IsInEnum();
 
-            RuleFor(c => c.Comics.PagesNumber)
+            RuleFor(c => c.PagesNumber)
                 .GreaterThan(0)
                 .WithMessage("Number of pages should be greater than 0.")
                 .InclusiveBetween(0, 1000)
                 .WithMessage("Number of pages should be within the range of 0 and 1000.");
 
-            RuleFor(c => c.Comics.PublicationFormat)
+            RuleFor(c => c.PublicationFormat)
                 .NotEmpty()
                 .MaximumLength(15)
                 .WithMessage("Entered value is too long");
 
-            RuleFor(c => c.Comics.YearOfPublication)
+            RuleFor(c => c.YearOfPublication)
                 .InclusiveBetween(1950, DateTime.Now.Year)
                 .WithMessage("Year of Publication should be within the range of 1950 and {To}.");
         }

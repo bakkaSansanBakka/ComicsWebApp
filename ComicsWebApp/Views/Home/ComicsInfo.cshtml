@@ -5,13 +5,19 @@
 @{
     ViewData["Title"] = "ComicsInfo";
     var color = "black";
-    if (Model.Comics.AvailabilityStatus.Equals(ComicsAvailabilityStatus.InStock))
+    if (Model.AvailabilityStatus.Equals(ComicsAvailabilityStatus.InStock))
     {
         color = "green";
     }
-    else if (Model.Comics.AvailabilityStatus.Equals(ComicsAvailabilityStatus.SoldOut))
+    else if (Model.AvailabilityStatus.Equals(ComicsAvailabilityStatus.SoldOut))
     {
         color = "red";
+    }
+}
+
+@functions {
+    public static string GetCheckboxPageId(int comicsPageId) {
+        return $"comicsPageImage{comicsPageId}";
     }
 }
 
@@ -23,24 +29,22 @@
 
 <hr />
 
-<div class="modal fade" id="addPagesModal" tabindex="-1" role="dialog" 
+<div class="modal fade" id="addPagesModal" tabindex="-1"
     aria-labelledby="addPagesModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog">
         <div class="modal-content">
-            <form enctype="multipart/form-data" method="post" asp-controller="Home" asp-route-id="@Model.Comics.Id" asp-action="AddPages">
+            <form enctype="multipart/form-data" method="post" asp-controller="Home" asp-route-id="@Model.Id" asp-action="AddPages">
                 <div class="modal-header">
                     <h5 class="modal-title" id="AddPagesModalLabel">Add Comics Pages</h5>
-                    <button id="closeAddPagesModalButton" type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button id="closeAddPagesModalButton" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                    <label asp-for="ListOfPages" class="control-label">Add Pages</label>
-                    <input asp-for="ListOfPages" class="form-control" type="file" name="pagesFiles" multiple />
+                    <label asp-for="Pages" class="control-label">Add Pages</label>
+                    <input asp-for="Pages" class="form-control" type="file" name="pagesFiles" multiple />
                 </div>
                 <div class="modal-footer">
-                    <input id="cancelAddPagesModalButton" type="button" class="btn btn-default" data-dismiss="modal" value="Cancel" />
+                    <input id="cancelAddPagesModalButton" type="button" class="btn btn-default" data-bs-dismiss="modal" value="Cancel" />
                     <input id="submitAddPagesModalButton" type="Submit" class="btn btn-success" value="Add" />
                 </div>
                 </div>
@@ -49,113 +53,147 @@
     </div>
 </div>
 
-<div class="flex-container">
-    <img src="@Url.Action("RenderPhoto", "Home", new {id = Model.Comics.Id })" class="main-image" height="440" width="290"/>
-    <div class="flex-info-box">
-        <div class="flex-container-space-between">
-            <div class="flex-container-column-direction">
-                <div style="color: @color;">@Model.Comics.AvailabilityStatus.GetDisplayName()</div>
-                <h3>@Model.Comics.Name</h3>
-            </div>
-            <button type="button" class="btn btn-success button-edit">Edit</button>
+<div class="modal fade" id="deletePagesModal" tabindex="-1"
+     aria-labelledby="deletePagesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="post" asp-controller="Home" asp-route-id="@Model.Id" asp-action="DeletePages">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deletePagesModalLabel">Delete Comics Pages</h5>
+                    <button id="closeDeletePagesModalButton" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        @if (Model.Pages.Count > 0)
+                        {
+                            <div class="row">
+                                @foreach (var comicsPage in Model.Pages)
+                                {
+                                    <div class="col comics-page">
+                                        <input type="checkbox" id="@GetCheckboxPageId(comicsPage.Id)" name="pageIds" value="@comicsPage.Id">
+                                        <label for="@GetCheckboxPageId(comicsPage.Id)">
+                                            <img src="@Url.Action("RenderPage", "Home", new {id = comicsPage.Id })" />
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                            
+                        }
+                    </div>
+                    <div class="modal-footer">
+                        <input id="cancelDeletePagesModalButton" type="button" class="btn btn-default" data-bs-dismiss="modal" value="Cancel" />
+                        <input id="submitDeletePagesModalButton" type="submit" class="btn btn-success" value="Delete" />
+                    </div>
+                </div>
+            </form>
         </div>
-        <div class="flex-container-space-between">
+    </div>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1"
+     aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="get" asp-controller="Home" asp-route-id="@Model.Id" asp-action="DeleteComics">
+                <div class="modal-body">
+                    Are you sure you want to delete this comics?
+                    <div class="modal-footer">
+                        <input id="cancelDeleteModalButton" type="button" class="btn btn-default"
+                               data-bs-dismiss="modal" value="Cancel" />
+                        <input id="submitDeleteModalButton" type="submit" class="btn btn-danger" value="Delete" />
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="flex-container">
+    <div id="pagesCarousel" class="carousel slide pages-carousel" data-bs-ride="carousel" data-bs-interval="false">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#pagesCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            @if (Model.Pages.Count > 0)
+            {
+                @for (int i = 1; i < Model.Pages.Count + 1; i++)
+                {
+                    <button type="button" data-bs-target="#pagesCarousel" data-bs-slide-to="@i" aria-label="Slide @i"></button>
+                }
+            }
+        </div>
+        <div class="carousel-inner" role="listbox">
+            <div class="carousel-item active">
+                <img src="@Url.Action("RenderPhoto", "Home", new {id = Model.Id })" />
+            </div>
+            @if (Model.Pages.Count > 0)
+            {
+                @foreach (var comicsPage in Model.Pages)
+                {
+                    <div class="carousel-item">
+                        <img  src="@Url.Action("RenderPage", "Home", new {id = comicsPage.Id })" />
+                    </div>
+                }
+            }
+        </div>
+        <a class="carousel-control-prev" href="#pagesCarousel" role="button" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#pagesCarousel" role="button" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+    </div>
+
+    <div class="flex-info-box">
+        <div class="flex-container-column-direction">
+            <div class="flex-container-column-direction">
+                <div style="color: @color;">@Model.AvailabilityStatus.GetDisplayName()</div>
+                <h3>@Model.Name</h3>
+            </div>
             <div>
-                <h3>$@Model.Comics.Price</h3>
-                <div>Written by @Model.Comics.Author</div>
-                <div><span class="span-bold">Publisher:</span> @Model.Comics.Publisher</div>
+                <h3>$@Model.Price</h3>
+                <div>Written by @Model.Author</div>
+                <div><span class="span-bold">Publisher:</span> @Model.Publisher</div>
                 <div>
                     <span class="span-bold">Genres:</span>
-                    @foreach (var genre in Model.ListOfGenres)
+                    @foreach (var genre in Model.Genres)
                     {
                         <a href="">@genre.GenreName</a>
                     }
                 </div>
             </div>
-            <button id="showAddPagesModalButton" type="button" class="btn btn-primary button-pages" data-toggle="modal" data-target="#addPagesModal">
+        </div>
+        <div class="flex-container-column-direction">
+            <input type="button" class="btn btn-success button-common button-edit" value="Edit"
+                   onclick="location.href='@Url.Action("EditComics", "Home", new { id = @Model.Id })'" />
+            <button id="showAddPagesModalButton" type="button" 
+                    class="btn btn-primary button-common button-pages" 
+                    data-bs-toggle="modal" data-bs-target="#addPagesModal">
                 Add Pages
+            </button>
+            <button id="showDeletePagesModalButton" type="button"
+                    class="btn btn-danger button-common button-pages"
+                    data-bs-toggle="modal" data-bs-target="#deletePagesModal">
+                Delete Pages
+            </button>
+            <button id="showDeleteWarningModalButton" type="button"
+                    class="btn btn-danger button-common button-delete"
+                    data-bs-toggle="modal" data-bs-target="#deleteModal">
+                Delete
             </button>
         </div>
     </div>
 </div>
 
 <h3>Description</h3>
-<div>@Model.Comics.Description</div><br />
+<div>@Model.Description</div><br />
 
-<div><span class="span-bold">Number of pages:</span> @Model.Comics.PagesNumber</div>
-<div><span class="span-bold">Publication Format:</span> @Model.Comics.PublicationFormat</div>
-<div><span class="span-bold">Cover Type:</span> @Model.Comics.CoverType</div>
-<div><span class="span-bold">Year of publication:</span> @Model.Comics.YearOfPublication</div>
-<div><span class="span-bold">Language:</span> @Model.Comics.Language</div>
+<div><span class="span-bold">Number of pages:</span> @Model.PagesNumber</div>
+<div><span class="span-bold">Publication Format:</span> @Model.PublicationFormat</div>
+<div><span class="span-bold">Cover Type:</span> @Model.CoverType</div>
+<div><span class="span-bold">Year of publication:</span> @Model.YearOfPublication</div>
+<div><span class="span-bold">Language:</span> @Model.Language</div>
 <br /><br />
-
-@if (Model.ListOfPages.Count > 0)
-{
-    <div id="imageCarousel" class="carousel slide" data-ride="carousel" style="width: 690px; height: 300px">
-        <div class="carousel-inner" role="listbox" style="width: 690px; height: 300px">
-            @*@foreach (var comicsPage in Model.ListOfPages)
-            {
-                <div class="carousel-item">
-                  <img  src="@Url.Action("RenderPage", "Home", new {id = comicsPage.Id })" alt="First slide" style="width: 200px;height: 200px"/>
-                </div>
-            }*@
-            <div class="carousel-item">
-              <img class="w-100" src="http://static.flickr.com/75/199481072_b4a0d09597_s.jpg" alt="Second slide">
-            </div>
-            <div class="carousel-item">
-              <img class="w-100" src="http://static.flickr.com/66/199481236_dc98b5abb3_s.jpg" alt="Second slide">
-            </div>
-        </div>
-        <a class="carousel-control-prev" href="#imageCarousel" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#imageCarousel" role="button" data-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
-    </div>
-}
-
-<div id="myCarousel" class="carousel slide">
-    <!-- Indicators -->
-    <ol class="carousel-indicators">
-        <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
-        <li data-target="#myCarousel" data-slide-to="1"></li>
-        <li data-target="#myCarousel" data-slide-to="2"></li>
-    </ol>
-
-    <!-- Wrapper for slides -->
-    <div class="carousel-inner">
-        <div class="item active">
-            <div class="fill" style="background-image:url('http://placehold.it/1900x1080&text=Slide One');"></div>
-            <div class="carousel-caption">
-                <h2>Caption 1</h2>
-            </div>
-        </div>
-        <div class="item">
-            <div class="fill" style="background-image:url('http://placehold.it/1900x1080&text=Slide Two');"></div>
-            <div class="carousel-caption">
-                <h2>Caption 2</h2>
-            </div>
-        </div>
-        <div class="item">
-            <div class="fill" style="background-image:url('http://placehold.it/1900x1080&text=Slide Three');"></div>
-            <div class="carousel-caption">
-                <h2>Caption 3</h2>
-            </div>
-        </div>
-    </div>
-
-    <!-- Controls -->
-    <a class="left carousel-control" href="#myCarousel" data-slide="prev">
-        <span class="icon-prev"></span>
-    </a>
-    <a class="right carousel-control" href="#myCarousel" data-slide="next">
-        <span class="icon-next"></span>
-    </a>
-</div>
-
 
 <div>
     <a asp-action="Index">Back to List</a>
@@ -163,14 +201,5 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    @*<script src="~/lib/jquery/dist/jquery.min.js"></script>*@
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    @*<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>*@
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    
-    <script>
-        const container = document.getElementById("addPagesModal");
-        const modal = new bootstrap.Modal(container);
-    </script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
 }

@@ -4,6 +4,7 @@ using ComicsWebApp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ComicsWebApp.Migrations
 {
     [DbContext(typeof(ComicsDbContext))]
-    partial class ComicsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220808164336_ReCreate")]
+    partial class ReCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,8 +34,8 @@ namespace ComicsWebApp.Migrations
 
                     b.Property<string>("Author")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(101)
+                        .HasColumnType("nvarchar(101)");
 
                     b.Property<string>("AvailabilityStatus")
                         .IsRequired()
@@ -63,9 +65,9 @@ namespace ComicsWebApp.Migrations
                         .HasMaxLength(4)
                         .HasColumnType("int");
 
-                    b.Property<decimal>("Price")
+                    b.Property<float>("Price")
                         .HasMaxLength(8)
-                        .HasColumnType("money");
+                        .HasColumnType("real");
 
                     b.Property<string>("PublicationFormat")
                         .IsRequired()

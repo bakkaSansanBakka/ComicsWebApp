@@ -8,6 +8,7 @@ namespace ComicsWebApp.Data
         public DbSet<Comics> Comics { get; set; }
         public DbSet<ComicsGenre> ComicsGenres { get; set; }
         public DbSet<ComicsPages> ComicsPages { get; set; }
+        public DbSet<ComicsComicsGenres> ComicsComicsGenres { get; set; }
 
         public ComicsDbContext(DbContextOptions<ComicsDbContext> options)
             : base(options)
@@ -37,7 +38,8 @@ namespace ComicsWebApp.Data
 
             modelBuilder.Entity<Comics>()
                 .Property(c => c.Price)
-                .HasMaxLength(8);
+                .HasMaxLength(8)
+                .HasColumnType("money");
 
             modelBuilder.Entity<Comics>()
                 .Property(c => c.Name)
@@ -68,6 +70,17 @@ namespace ComicsWebApp.Data
                     new ComicsGenre {Id = 8, GenreName = "Fantasy"},
                     new ComicsGenre {Id = 9, GenreName = "Humor"}
                 });
+
+            modelBuilder.Entity<Comics>().HasMany(c => c.Genres)
+                .WithMany(g => g.Comics)
+                .UsingEntity<ComicsComicsGenres>(
+                    x => x.HasOne(x => x.ComicsGenre)
+                    .WithMany().HasForeignKey(x => x.GenresId),
+                    x => x.HasOne(x => x.Comics)
+                    .WithMany().HasForeignKey(x => x.ComicsId));
+
+            modelBuilder.Entity<ComicsComicsGenres>()
+                .HasKey(x => new {x.ComicsId, x.GenresId});
         }
     }
 }

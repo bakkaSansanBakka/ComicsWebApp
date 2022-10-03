@@ -8,11 +8,11 @@ namespace ComicsWebApp.Utilities
     {
         public AppMappingProfile()
         {
-            CreateMap<Comics, ComicsViewModel>()
-                .ForMember(dest => dest.ListOfGenres, opt => opt.MapFrom(src => src.Genres))
-                .ForMember(dest => dest.ListOfPages, opt => opt.MapFrom(src => src.Pages));
-
-            CreateMap<ComicsAddEditModel, ComicsViewModel>();
+            CreateMap<ComicsAddEditModel, ComicsViewModel>().ReverseMap();
+            CreateMap<Comics, ComicsViewModel>().ReverseMap();
+            CreateMap<ComicsAddEditModel, Comics>().ReverseMap();
+            CreateMap<ComicsPagesDTO, ComicsPages>().ReverseMap();
+            CreateMap<ComicsGenreDTO, ComicsGenre>().ReverseMap();
         }
     }
 }
